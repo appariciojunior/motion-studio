@@ -21,8 +21,15 @@ import { textShimmerEffect } from "./text-shimmer";
 import { textScrambleEffect } from "./text-scramble";
 import { typewriterEffect } from "./typewriter";
 import { wavyTextEffect } from "./wavy-text";
+import { splitTextEffect } from "./split-text";
+import { morphingTextEffect } from "./morphing-text";
+import { rollingTextEffect } from "./rolling-text";
 import { gradientTextEffect } from "./gradient-text";
 import { auroraEffect } from "./aurora";
+import { starsBackgroundEffect } from "./stars-background";
+import { bubbleBackgroundEffect } from "./bubble-background";
+import { fireworksBackgroundEffect } from "./fireworks-background";
+import { hexagonBackgroundEffect } from "./hexagon-background";
 import { meshGradientEffect } from "./mesh-gradient";
 import { dotGridEffect } from "./dot-grid";
 import { floatingBlobsEffect } from "./floating-blobs";
@@ -44,6 +51,20 @@ import { ossHeroEffect } from "./oss-hero";
 import { warpOverlayEffect } from "./warp-overlay";
 import { appleWatchEffect } from "./apple-watch";
 import { smoothTabsEffect } from "./smooth-tabs";
+import { highlightTextEffect } from "./highlight-text";
+import { fillTextEffect } from "./fill-text";
+import { slidingNumberEffect } from "./sliding-number";
+import { numberCounterEffect } from "./number-counter";
+import { cursorTrailEffect } from "./cursor-trail";
+import { bobbleHoverEffect } from "./bobble-hover";
+import { flipCardEffect } from "./flip-card";
+import { cardStackEffect } from "./card-stack";
+import { tickerMarqueeEffect } from "./ticker-marquee";
+import { staggeredGridEffect } from "./staggered-grid";
+import { reorderListEffect } from "./reorder-list";
+import { copyButtonEffect } from "./copy-button";
+import { rippleButtonEffect } from "./ripple-button";
+import { liquidButtonEffect } from "./liquid-button";
 
 export const effects: Effect[] = [
   // Text effects
@@ -52,6 +73,11 @@ export const effects: Effect[] = [
   typewriterEffect,
   textScrambleEffect,
   wavyTextEffect,
+  splitTextEffect,
+  morphingTextEffect,
+  rollingTextEffect,
+  highlightTextEffect,
+  fillTextEffect,
   // Loading & feedback
   shimmerEffect,
   skeletonEffect,
@@ -65,6 +91,10 @@ export const effects: Effect[] = [
   confettiEffect,
   // Backgrounds & ambient
   auroraEffect,
+  starsBackgroundEffect,
+  bubbleBackgroundEffect,
+  fireworksBackgroundEffect,
+  hexagonBackgroundEffect,
   meshGradientEffect,
   dotGridEffect,
   floatingBlobsEffect,
@@ -82,14 +112,26 @@ export const effects: Effect[] = [
   pageTransitionsEffect,
   curtainsEffect,
   staggerListEffect,
+  tickerMarqueeEffect,
+  staggeredGridEffect,
+  reorderListEffect,
   // Micro-interactions
   hoverCardEffect,
   counterEffect,
+  numberCounterEffect,
+  slidingNumberEffect,
   buttonPressEffect,
   smoothTabsEffect,
   tiltCardEffect,
   magneticButtonEffect,
   likeBurstEffect,
+  cursorTrailEffect,
+  bobbleHoverEffect,
+  flipCardEffect,
+  cardStackEffect,
+  copyButtonEffect,
+  rippleButtonEffect,
+  liquidButtonEffect,
   // Forms & inputs
   colorPickerEffect,
   charactersRemainingEffect,

@@ -8,6 +8,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev:web": "vite --config vite.web.config.ts",
+    "build:web": "vite build --config vite.web.config.ts",
     "build": "node glaze.ts build",
     "dev": "node glaze.ts dev",
     "dev:renderer": "node glaze.ts dev:renderer",
