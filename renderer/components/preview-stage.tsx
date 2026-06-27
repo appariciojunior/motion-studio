@@ -1,4 +1,4 @@
-import { Toolbar, ToolbarRow, ToolbarTitle, ToolbarActions, Button } from "@glaze/core/components";
+import { Button } from "@glaze/core/components";
 import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
@@ -44,24 +44,26 @@ export function PreviewStage({
   const Preview = effect.Preview;
   return (
     <div className="h-full flex flex-col">
-      <Toolbar position="top">
-        <ToolbarRow className="relative justify-center">
-          <div className="flex min-w-0 items-center justify-center gap-1">
+      <div className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10">
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
+          <div className="pointer-events-auto flex max-w-[min(70%,28rem)] items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
             <Button
               variant="default"
               size="small"
               iconOnly
+              className="rounded-full"
               aria-label={`Previous effect: ${previousLabel}`}
               title={previousLabel}
               onClick={onPrevious}
             >
               <ChevronLeft size={15} />
             </Button>
-            <ToolbarTitle className="flex-none max-w-64 text-center">{effect.name}</ToolbarTitle>
+            <span className="min-w-0 truncate px-2 text-center text-sm font-medium">{effect.name}</span>
             <Button
               variant="default"
               size="small"
               iconOnly
+              className="rounded-full"
               aria-label={`Next effect: ${nextLabel}`}
               title={nextLabel}
               onClick={onNext}
@@ -69,12 +71,10 @@ export function PreviewStage({
               <ChevronRight size={15} />
             </Button>
           </div>
-          <ToolbarActions className="absolute right-2 ml-0">
-            <AppearanceToggle />
-          </ToolbarActions>
-        </ToolbarRow>
-      </Toolbar>
-      <div className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10">
+        </div>
+        <div className="absolute right-3 top-3 z-20">
+          <AppearanceToggle />
+        </div>
         {/* Give the preview a definite, centered width so panel-style effects
             using `w-full max-w-*` (overlays, dialogs, transitions) expand to
             their intended size instead of collapsing to ~0 in a shrink-to-fit

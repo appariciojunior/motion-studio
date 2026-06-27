@@ -1,9 +1,5 @@
 import * as React from "react";
 import {
-  Toolbar,
-  ToolbarRow,
-  ToolbarTitle,
-  ToolbarActions,
   Button,
   SegmentedControl,
   SegmentedControlItem,
@@ -187,36 +183,6 @@ export function TreatmentStage({
 
   return (
     <div className="h-full flex flex-col">
-      <Toolbar position="top">
-        <ToolbarRow className="relative justify-center">
-          <div className="flex min-w-0 items-center justify-center gap-1">
-            <Button
-              variant="default"
-              size="small"
-              iconOnly
-              aria-label={`Previous effect: ${previousLabel}`}
-              title={previousLabel}
-              onClick={onPrevious}
-            >
-              <ChevronLeft size={15} />
-            </Button>
-            <ToolbarTitle className="flex-none max-w-64 text-center">{treatment.name}</ToolbarTitle>
-            <Button
-              variant="default"
-              size="small"
-              iconOnly
-              aria-label={`Next effect: ${nextLabel}`}
-              title={nextLabel}
-              onClick={onNext}
-            >
-              <ChevronRight size={15} />
-            </Button>
-          </div>
-          <ToolbarActions className="absolute right-2 ml-0">
-            <AppearanceToggle />
-          </ToolbarActions>
-        </ToolbarRow>
-      </Toolbar>
       <div
         className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
         onDragOver={(e) => {
@@ -228,6 +194,36 @@ export function TreatmentStage({
         onDragLeave={() => setDragOver(false)}
         onDrop={treatment.needsSource ? handleDrop : undefined}
       >
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
+          <div className="pointer-events-auto flex max-w-[min(70%,28rem)] items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              className="rounded-full"
+              aria-label={`Previous effect: ${previousLabel}`}
+              title={previousLabel}
+              onClick={onPrevious}
+            >
+              <ChevronLeft size={15} />
+            </Button>
+            <span className="min-w-0 truncate px-2 text-center text-sm font-medium">{treatment.name}</span>
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              className="rounded-full"
+              aria-label={`Next effect: ${nextLabel}`}
+              title={nextLabel}
+              onClick={onNext}
+            >
+              <ChevronRight size={15} />
+            </Button>
+          </div>
+        </div>
+        <div className="absolute right-3 top-3 z-20">
+          <AppearanceToggle />
+        </div>
         {missingSource ? (
           <EmptyState>
             <EmptyStateTitle>No image yet</EmptyStateTitle>
