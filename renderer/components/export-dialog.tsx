@@ -11,7 +11,7 @@ import {
   Tabs,
   TabsTrigger,
 } from "@glaze/core/components";
-import { Copy, Check, Download } from "lucide-react";
+import { Copy, Check, Download, WrapText } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { copyToClipboard, downloadText } from "../lib/export-utils";
 
@@ -36,6 +36,7 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
   const hasCss = typeof effect.exports.css === "function";
   const [format, setFormat] = React.useState<Format>("react");
   const [copied, setCopied] = React.useState(false);
+  const [wrapText, setWrapText] = React.useState(false);
 
   // Fall back to React when switching to an effect that lacks the active format.
   React.useEffect(() => {
@@ -84,9 +85,27 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
               {hasCss && <TabsTrigger value="css">{FORMAT_META.css.label}</TabsTrigger>}
             </Tabs>
           </TabsRoot>
-          <pre className="mt-3 max-h-[46vh] overflow-auto rounded-card bg-control border border-separator p-4 font-mono text-small leading-relaxed whitespace-pre">
-            <code>{content}</code>
-          </pre>
+          <div className="relative mt-3">
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              className="absolute top-2 right-2 z-10 backdrop-blur-sm"
+              aria-label={wrapText ? "Disable text wrapping" : "Wrap text"}
+              aria-pressed={wrapText}
+              title={wrapText ? "Disable text wrapping" : "Wrap text"}
+              onClick={() => setWrapText((current) => !current)}
+            >
+              <WrapText size={14} />
+            </Button>
+            <pre
+              className={`max-h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-12 font-mono text-small leading-relaxed ${
+                wrapText ? "whitespace-pre-wrap break-words" : "whitespace-pre"
+              }`}
+            >
+              <code>{content}</code>
+            </pre>
+          </div>
         </DialogBody>
         <DialogFooter>
           <Button variant="default" onClick={handleDownload}>
