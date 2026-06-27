@@ -6,7 +6,7 @@ import {
   SegmentedControl,
   SegmentedControlItem,
 } from "@glaze/core/components";
-import { ImageUp, Check } from "lucide-react";
+import { Dice5, ImageUp, Check } from "lucide-react";
 import { cn } from "@glaze/core/utils";
 import { ColorPresetGrid, ControlRow, LabeledSlider } from "./control-row";
 import { CurveEditor } from "./curve-editor";
@@ -14,6 +14,17 @@ import type { Treatment } from "./treatments/types";
 import type { EffectParams, ParamValue } from "./effects/types";
 import type { AnimationSettings } from "../lib/anim";
 import { SAMPLE_IMAGES, type SampleImage } from "../lib/source-image";
+
+const EASING_PRESETS = [
+  "0.25,0.1,0.25,1",
+  "0.32,0.72,0,1",
+  "0.45,0,0.55,1",
+  "0.2,0.8,0.2,1",
+  "0.16,1,0.3,1",
+  "0.7,0,0.84,0",
+  "0.34,1.56,0.64,1",
+  "0.87,0,0.13,1",
+];
 
 interface TreatmentPanelProps {
   treatment: Treatment;
@@ -81,7 +92,19 @@ function AnimationControls({
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-small text-secondary">Easing</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-secondary">Easing</span>
+              <Button
+                variant="default"
+                size="small"
+                iconOnly
+                aria-label="Randomize easing curve"
+                title="Randomize easing curve"
+                onClick={() => onAnimChange({ easing: EASING_PRESETS[Math.floor(Math.random() * EASING_PRESETS.length)] })}
+              >
+                <Dice5 size={14} />
+              </Button>
+            </div>
             <CurveEditor value={anim.easing} onChange={(v) => onAnimChange({ easing: v })} animate />
           </div>
         </>
