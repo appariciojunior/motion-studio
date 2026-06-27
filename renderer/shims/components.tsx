@@ -133,12 +133,14 @@ export function Sidebar({ children, className, ...props }: React.ComponentProps<
 
 export function SidebarList({ children, className }: { children?: React.ReactNode; className?: string }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [showTopFade, setShowTopFade] = React.useState(false);
   const [showBottomFade, setShowBottomFade] = React.useState(false);
 
-  const updateBottomFade = React.useCallback(() => {
+  const updateScrollFades = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
     const canScroll = el.scrollHeight > el.clientHeight + 1;
+    setShowTopFade(canScroll && el.scrollTop > 0);
     const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 2;
     setShowBottomFade(canScroll && !atBottom);
   }, []);
@@ -146,27 +148,35 @@ export function SidebarList({ children, className }: { children?: React.ReactNod
   React.useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    updateBottomFade();
-    const observer = new ResizeObserver(updateBottomFade);
+    updateScrollFades();
+    const observer = new ResizeObserver(updateScrollFades);
     observer.observe(el);
-    el.addEventListener("scroll", updateBottomFade, { passive: true });
+    el.addEventListener("scroll", updateScrollFades, { passive: true });
     return () => {
       observer.disconnect();
-      el.removeEventListener("scroll", updateBottomFade);
+      el.removeEventListener("scroll", updateScrollFades);
     };
-  }, [updateBottomFade, children]);
+  }, [updateScrollFades, children]);
 
   return (
     <div className={cn("relative flex-1 min-h-0", className)}>
-      <div
-        ref={scrollRef}
-        className={cn(
-          "sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2",
-          showBottomFade && "sidebar-scroll-fade-bottom",
-        )}
-      >
+      <div ref={scrollRef} className="sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2">
         {children}
       </div>
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-black/[0.045] to-transparent transition-opacity duration-150 dark:from-white/3",
+          showTopFade ? "opacity-100" : "opacity-0",
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-black/[0.045] to-transparent transition-opacity duration-150 dark:from-white/3",
+          showBottomFade ? "opacity-100" : "opacity-0",
+        )}
+      />
     </div>
   );
 }
