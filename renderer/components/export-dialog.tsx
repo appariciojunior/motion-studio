@@ -99,7 +99,7 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
               <WrapText size={14} />
             </Button>
             <pre
-              className={`max-h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-12 font-mono text-small leading-relaxed ${
+              className={`h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-12 font-mono text-small leading-relaxed ${
                 wrapText ? "whitespace-pre-wrap break-words" : "whitespace-pre"
               }`}
             >
