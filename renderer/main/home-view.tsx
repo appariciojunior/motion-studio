@@ -32,8 +32,10 @@ export function HomeView() {
 
   // Shared easing-driven animation settings for image treatments.
   const [anim, setAnim] = React.useState<AnimationSettings>(defaultAnimation);
-  const handleAnimChange = (patch: Partial<AnimationSettings>) =>
+  const handleAnimChange = (patch: Partial<AnimationSettings>) => {
     setAnim((prev) => ({ ...prev, ...patch }));
+    setReplayToken((token) => token + 1);
+  };
 
   React.useEffect(() => {
     let alive = true;
