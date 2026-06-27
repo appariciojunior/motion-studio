@@ -114,6 +114,11 @@ body {
   scrollbar-color: color-mix(in oklch, var(--color-foreground) 32%, transparent) transparent;
 }
 
+.sidebar-scroll-fade-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent 100%);
+}
+
 .sidebar-scroll::-webkit-scrollbar {
   width: 10px;
 }
