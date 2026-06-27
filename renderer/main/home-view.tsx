@@ -120,7 +120,7 @@ export function HomeView() {
         storageKey="motion-studio"
         className="h-full"
         sidebar={<EffectSidebar selectedId={selectedId} onSelect={handleSelect} />}
-        sidebarSize={{ default: 220, min: 180, max: 300 }}
+        sidebarSize={{ default: 240, min: 180, max: 350 }}
         inspector={
           item.kind === "effect" ? (
             <ControlPanel

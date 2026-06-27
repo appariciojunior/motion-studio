@@ -222,15 +222,53 @@ export function SplitView({
   inspectorSize = { default: 300 },
   children,
   className,
+  storageKey,
 }: SplitViewProps) {
+  const sidebarStorageKey = storageKey ? `${storageKey}:sidebar-width` : null;
+  const [sidebarWidth, setSidebarWidth] = React.useState(() => {
+    if (!sidebarStorageKey) return sidebarSize.default;
+    const stored = window.localStorage.getItem(sidebarStorageKey);
+    const parsed = stored ? Number(stored) : NaN;
+    return Number.isFinite(parsed) ? parsed : sidebarSize.default;
+  });
+  const sidebarMin = sidebarSize.min ?? 160;
+  const sidebarMax = sidebarSize.max ?? 350;
+
+  const startSidebarResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = sidebarWidth;
+
+    const onMove = (moveEvent: PointerEvent) => {
+      const nextWidth = Math.min(sidebarMax, Math.max(sidebarMin, startWidth + moveEvent.clientX - startX));
+      setSidebarWidth(nextWidth);
+      if (sidebarStorageKey) window.localStorage.setItem(sidebarStorageKey, String(Math.round(nextWidth)));
+    };
+
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   return (
     <div className={cn("flex h-full overflow-hidden", className)}>
       {sidebar && (
         <div
-          style={{ width: sidebarSize.default, minWidth: sidebarSize.min, maxWidth: sidebarSize.max }}
-          className="shrink-0 h-full overflow-hidden"
+          style={{ width: sidebarWidth, minWidth: sidebarMin, maxWidth: sidebarMax }}
+          className="relative shrink-0 h-full overflow-hidden"
         >
           {sidebar}
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize sidebar"
+            className="absolute inset-y-0 right-0 z-20 w-1 cursor-col-resize bg-transparent hover:bg-blue-500/40"
+            onPointerDown={startSidebarResize}
+          />
         </div>
       )}
       <div className="flex-1 min-w-0 h-full overflow-hidden">{children}</div>
