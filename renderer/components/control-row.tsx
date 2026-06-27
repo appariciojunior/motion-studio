@@ -111,21 +111,31 @@ export function ColorPresetGrid({
       onChange(control.id, palette[index % palette.length]);
     });
   };
+  const resetColors = () => {
+    colorControls.forEach((control) => {
+      if (control.type === "color") onChange(control.id, control.default);
+    });
+  };
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <span className="text-small text-secondary">Presets</span>
-        <Button
-          variant="default"
-          size="small"
-          iconOnly
-          aria-label="Randomize colors"
-          title="Randomize colors"
-          onClick={() => applyPalette(randomHarmonyPalette(colorCount))}
-        >
-          <Shuffle size={14} />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button variant="default" size="small" onClick={resetColors}>
+            Reset
+          </Button>
+          <Button
+            variant="default"
+            size="small"
+            iconOnly
+            aria-label="Randomize colors"
+            title="Randomize colors"
+            onClick={() => applyPalette(randomHarmonyPalette(colorCount))}
+          >
+            <Shuffle size={14} />
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-4 gap-2">
         {previewPalettes.map((palette) => {
