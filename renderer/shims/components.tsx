@@ -183,7 +183,7 @@ export function SidebarListItem({ title, icon, selected, onClick, className }: S
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left cursor-default transition-colors rounded-md mx-1",
+        "mx-1 flex w-[calc(100%-0.5rem)] items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm cursor-default transition-colors",
         selected
           ? "bg-blue-500/14 text-blue-700 dark:text-blue-400 font-medium"
           : "text-black/[0.78] dark:text-white/70 hover:bg-black/[0.07] dark:hover:bg-white/5 hover:text-foreground",
