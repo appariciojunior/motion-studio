@@ -10,7 +10,7 @@ import { PreviewStage } from "../components/preview-stage";
 import { ExportDialog } from "../components/export-dialog";
 import { TreatmentPanel } from "../components/treatment-panel";
 import { TreatmentStage } from "../components/treatment-stage";
-import type { StageBackgroundMode } from "../components/stage-canvas-controls";
+import type { StageBackgroundMode, StageCanvasTone } from "../components/stage-canvas-controls";
 import { SAMPLE_IMAGES, loadSample, loadFile, type SampleImage } from "../lib/source-image";
 import { defaultAnimation, type AnimationSettings } from "../lib/anim";
 
@@ -27,6 +27,7 @@ export function HomeView() {
   const [replayToken, setReplayToken] = React.useState(0);
   const [exportOpen, setExportOpen] = React.useState(false);
   const [stageBackgroundMode, setStageBackgroundMode] = React.useState<StageBackgroundMode>("dots");
+  const [stageCanvasTone, setStageCanvasTone] = React.useState<StageCanvasTone>("system");
   const [stageZoom, setStageZoom] = React.useState(1);
 
   // Shared source image for the treatment lab.
@@ -151,8 +152,10 @@ export function HomeView() {
             previousLabel={previousItem.name}
             nextLabel={nextItem.name}
             backgroundMode={stageBackgroundMode}
+            canvasTone={stageCanvasTone}
             zoom={stageZoom}
             onBackgroundModeChange={setStageBackgroundMode}
+            onCanvasToneChange={setStageCanvasTone}
             onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}
@@ -169,8 +172,10 @@ export function HomeView() {
             previousLabel={previousItem.name}
             nextLabel={nextItem.name}
             backgroundMode={stageBackgroundMode}
+            canvasTone={stageCanvasTone}
             zoom={stageZoom}
             onBackgroundModeChange={setStageBackgroundMode}
+            onCanvasToneChange={setStageCanvasTone}
             onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}

@@ -179,10 +179,29 @@ button {
   }
 }
 
+.motion-stage {
+  --stage-background: var(--color-background);
+  --stage-mark: color-mix(in oklch, var(--color-foreground) 14%, transparent);
+  background-color: var(--stage-background);
+  transition:
+    background-color 0.22s ease,
+    background-image 0.22s ease;
+}
+
+.motion-stage[data-canvas-tone="light"] {
+  --stage-background: oklch(1 0 0);
+  --stage-mark: rgba(0, 0, 0, 0.12);
+}
+
+.motion-stage[data-canvas-tone="dark"] {
+  --stage-background: oklch(0.145 0 0);
+  --stage-mark: rgba(255, 255, 255, 0.12);
+}
+
 .motion-stage[data-bg-mode="dots"],
 .motion-stage:not([data-bg-mode]) {
   background-image: radial-gradient(
-    color-mix(in oklch, var(--color-foreground) 14%, transparent) 1px,
+    var(--stage-mark) 1px,
     transparent 1px
   );
   background-size: 16px 16px;
@@ -190,8 +209,8 @@ button {
 
 .motion-stage[data-bg-mode="grid"] {
   background-image:
-    linear-gradient(color-mix(in oklch, var(--color-foreground) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-foreground) 10%, transparent) 1px, transparent 1px);
+    linear-gradient(var(--stage-mark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--stage-mark) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 

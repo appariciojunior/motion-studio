@@ -2,7 +2,7 @@ import { Button } from "@glaze/core/components";
 import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
-import { StageCanvasControls, type StageBackgroundMode } from "./stage-canvas-controls";
+import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 
 interface PreviewStageProps {
   effect: Effect;
@@ -11,8 +11,10 @@ interface PreviewStageProps {
   previousLabel: string;
   nextLabel: string;
   backgroundMode: StageBackgroundMode;
+  canvasTone: StageCanvasTone;
   zoom: number;
   onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onCanvasToneChange: (tone: StageCanvasTone) => void;
   onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -42,8 +44,10 @@ export function PreviewStage({
   previousLabel,
   nextLabel,
   backgroundMode,
+  canvasTone,
   zoom,
   onBackgroundModeChange,
+  onCanvasToneChange,
   onZoomChange,
   onPrevious,
   onNext,
@@ -56,6 +60,7 @@ export function PreviewStage({
       <div
         className="motion-stage relative flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
         data-bg-mode={backgroundMode}
+        data-canvas-tone={canvasTone}
       >
         <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
           <div className="pointer-events-auto flex max-w-[min(70%,28rem)] items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
@@ -116,8 +121,10 @@ export function PreviewStage({
         <div className="pointer-events-none absolute bottom-5 right-3 z-20">
           <StageCanvasControls
             backgroundMode={backgroundMode}
+            canvasTone={canvasTone}
             zoom={zoom}
             onBackgroundModeChange={onBackgroundModeChange}
+            onCanvasToneChange={onCanvasToneChange}
             onZoomChange={onZoomChange}
           />
         </div>

@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight, RotateCcw, Download, Check, ImageUp, Loader2
 import type { Treatment } from "./treatments/types";
 import type { EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
-import { StageCanvasControls, type StageBackgroundMode } from "./stage-canvas-controls";
+import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 import { downloadCanvasPng } from "../lib/image-export";
 import {
   applyAnimation,
@@ -36,8 +36,10 @@ interface TreatmentStageProps {
   previousLabel: string;
   nextLabel: string;
   backgroundMode: StageBackgroundMode;
+  canvasTone: StageCanvasTone;
   zoom: number;
   onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onCanvasToneChange: (tone: StageCanvasTone) => void;
   onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -71,8 +73,10 @@ export function TreatmentStage({
   previousLabel,
   nextLabel,
   backgroundMode,
+  canvasTone,
   zoom,
   onBackgroundModeChange,
+  onCanvasToneChange,
   onZoomChange,
   onPrevious,
   onNext,
@@ -195,6 +199,7 @@ export function TreatmentStage({
       <div
         className="motion-stage relative flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
         data-bg-mode={backgroundMode}
+        data-canvas-tone={canvasTone}
         onDragOver={(e) => {
           if (treatment.needsSource) {
             e.preventDefault();
@@ -297,8 +302,10 @@ export function TreatmentStage({
         <div className="pointer-events-none absolute bottom-5 right-3 z-20">
           <StageCanvasControls
             backgroundMode={backgroundMode}
+            canvasTone={canvasTone}
             zoom={zoom}
             onBackgroundModeChange={onBackgroundModeChange}
+            onCanvasToneChange={onCanvasToneChange}
             onZoomChange={onZoomChange}
           />
         </div>

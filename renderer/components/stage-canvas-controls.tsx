@@ -1,26 +1,35 @@
 import { Button } from "@glaze/core/components";
-import { Circle, Grid2X2, Minus, Plus } from "lucide-react";
+import { CircleDot, Grid2X2, Laptop, Minus, Moon, Plus, Square, Sun } from "lucide-react";
 
 export type StageBackgroundMode = "dots" | "grid" | "solid";
+export type StageCanvasTone = "system" | "light" | "dark";
 
 interface StageCanvasControlsProps {
   backgroundMode: StageBackgroundMode;
+  canvasTone: StageCanvasTone;
   zoom: number;
   onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onCanvasToneChange: (tone: StageCanvasTone) => void;
   onZoomChange: (zoom: number) => void;
 }
 
 const BACKGROUND_MODES: StageBackgroundMode[] = ["dots", "grid", "solid"];
+const CANVAS_TONES: StageCanvasTone[] = ["system", "dark", "light"];
 
 export function StageCanvasControls({
   backgroundMode,
+  canvasTone,
   zoom,
   onBackgroundModeChange,
+  onCanvasToneChange,
   onZoomChange,
 }: StageCanvasControlsProps) {
   const nextMode = BACKGROUND_MODES[(BACKGROUND_MODES.indexOf(backgroundMode) + 1) % BACKGROUND_MODES.length];
+  const nextTone = CANVAS_TONES[(CANVAS_TONES.indexOf(canvasTone) + 1) % CANVAS_TONES.length];
   const zoomOut = () => onZoomChange(Math.max(0.5, Number((zoom - 0.1).toFixed(2))));
   const zoomIn = () => onZoomChange(Math.min(2, Number((zoom + 0.1).toFixed(2))));
+  const PatternIcon = backgroundMode === "dots" ? CircleDot : backgroundMode === "grid" ? Grid2X2 : Square;
+  const ToneIcon = canvasTone === "system" ? Laptop : canvasTone === "dark" ? Moon : Sun;
 
   return (
     <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
@@ -30,10 +39,21 @@ export function StageCanvasControls({
         iconOnly
         className="rounded-full"
         aria-label={`Switch canvas background to ${nextMode}`}
-        title={`Background: ${backgroundMode}`}
+        title={`Canvas background: ${backgroundMode}`}
         onClick={() => onBackgroundModeChange(nextMode)}
       >
-        {backgroundMode === "grid" ? <Grid2X2 size={15} /> : <Circle size={15} />}
+        <PatternIcon size={15} />
+      </Button>
+      <Button
+        variant="default"
+        size="small"
+        iconOnly
+        className="rounded-full"
+        aria-label={`Switch canvas tone to ${nextTone}`}
+        title={`Canvas tone: ${canvasTone}`}
+        onClick={() => onCanvasToneChange(nextTone)}
+      >
+        <ToneIcon size={15} />
       </Button>
       <div className="mx-1 h-4 w-px bg-black/12 dark:bg-white/12" />
       <Button
