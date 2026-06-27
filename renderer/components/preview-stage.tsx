@@ -54,7 +54,7 @@ export function PreviewStage({
   return (
     <div className="h-full flex flex-col">
       <div
-        className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
+        className="motion-stage relative flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
         data-bg-mode={backgroundMode}
       >
         <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
