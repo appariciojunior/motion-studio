@@ -13,6 +13,33 @@ interface StageCanvasControlsProps {
   onZoomChange: (zoom: number) => void;
 }
 
+function canvasControlToneClasses(canvasTone: StageCanvasTone) {
+  if (canvasTone === "light") {
+    return {
+      pill: "border-black/12 bg-white/90",
+      divider: "bg-black/12 dark:bg-black/12",
+      button:
+        "rounded-full bg-black/5 hover:bg-black/10 border-black/10 text-neutral-900 dark:bg-black/5 dark:hover:bg-black/10 dark:border-black/10 dark:text-neutral-900",
+      zoom: "text-neutral-600 hover:text-neutral-900 dark:text-neutral-600 dark:hover:text-neutral-900",
+    };
+  }
+  if (canvasTone === "dark") {
+    return {
+      pill: "border-white/20 bg-neutral-950/90",
+      divider: "bg-white/12 dark:bg-white/12",
+      button:
+        "rounded-full bg-white/5 hover:bg-white/10 border-white/10 text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-white",
+      zoom: "text-neutral-400 hover:text-white dark:text-neutral-400 dark:hover:text-white",
+    };
+  }
+  return {
+    pill: "border-separator bg-background/85",
+    divider: "bg-black/12 dark:bg-white/12",
+    button: "rounded-full",
+    zoom: "text-secondary hover:text-foreground",
+  };
+}
+
 const CANVAS_PRESETS: Array<{ mode: StageBackgroundMode; tone: StageCanvasTone }> = [
   { mode: "dots", tone: "system" },
   { mode: "grid", tone: "system" },
@@ -44,26 +71,30 @@ export function StageCanvasControls({
     onBackgroundModeChange(nextPreset.mode);
     onCanvasToneChange(nextPreset.tone);
   };
+  const toneClasses = canvasControlToneClasses(canvasTone);
 
   return (
-    <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
+    <div
+      className={`pointer-events-auto flex items-center gap-1 rounded-full border p-1 shadow-sm backdrop-blur ${toneClasses.pill}`}
+      data-canvas-tone={canvasTone}
+    >
       <Button
         variant="default"
         size="small"
         iconOnly
-        className="rounded-full"
+        className={toneClasses.button}
         aria-label={`Switch canvas background to ${nextPreset.mode}`}
         title={`Canvas: ${backgroundMode}, ${canvasTone}`}
         onClick={switchCanvasPreset}
       >
         <PatternIcon size={15} />
       </Button>
-      <div className="mx-1 h-4 w-px bg-black/12 dark:bg-white/12" />
+      <div className={`mx-1 h-4 w-px ${toneClasses.divider}`} />
       <Button
         variant="default"
         size="small"
         iconOnly
-        className="rounded-full"
+        className={toneClasses.button}
         aria-label="Zoom out"
         onClick={zoomOut}
       >
@@ -71,7 +102,7 @@ export function StageCanvasControls({
       </Button>
       <button
         type="button"
-        className="h-6 min-w-12 rounded-full px-2 text-small font-medium text-secondary tabular-nums hover:text-foreground"
+        className={`h-6 min-w-12 rounded-full px-2 text-small font-medium tabular-nums ${toneClasses.zoom}`}
         aria-label="Reset canvas zoom"
         title="Reset zoom"
         onClick={() => onZoomChange(1)}
@@ -82,7 +113,7 @@ export function StageCanvasControls({
         variant="default"
         size="small"
         iconOnly
-        className="rounded-full"
+        className={toneClasses.button}
         aria-label="Zoom in"
         onClick={zoomIn}
       >
