@@ -4,7 +4,7 @@
  */
 import * as React from "react";
 import { Tooltip, Select as RadixSelect, Slider as RadixSlider, Switch as RadixSwitch } from "radix-ui";
-import { ChevronDown, PanelLeftOpen } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -234,17 +234,6 @@ export function SidebarListItem({ title, icon, selected, onClick, className }: S
 // ---------------------------------------------------------------------------
 // SplitView — 3-pane layout: sidebar | main content | inspector
 // ---------------------------------------------------------------------------
-interface SidebarCollapseContextValue {
-  collapsed: boolean;
-  toggle: () => void;
-}
-
-const SidebarCollapseContext = React.createContext<SidebarCollapseContextValue | null>(null);
-
-export function useSidebarCollapse() {
-  return React.useContext(SidebarCollapseContext);
-}
-
 interface PaneSize {
   default: number;
   min?: number;
@@ -271,45 +260,18 @@ export function SplitView({
   storageKey,
 }: SplitViewProps) {
   const sidebarStorageKey = storageKey ? `${storageKey}:sidebar-width` : null;
-  const collapseStorageKey = storageKey ? `${storageKey}:sidebar-collapsed` : null;
   const [sidebarWidth, setSidebarWidth] = React.useState(() => {
     if (!sidebarStorageKey) return sidebarSize.default;
     const stored = window.localStorage.getItem(sidebarStorageKey);
     const parsed = stored ? Number(stored) : NaN;
     return Number.isFinite(parsed) ? parsed : sidebarSize.default;
   });
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(() => {
-    if (!collapseStorageKey) return false;
-    return window.localStorage.getItem(collapseStorageKey) === "1";
-  });
-  const savedSidebarWidthRef = React.useRef(sidebarWidth);
   const sidebarMin = sidebarSize.min ?? 160;
   const sidebarMax = sidebarSize.max ?? 350;
   const setPersistedSidebarWidth = (width: number) => {
     setSidebarWidth(width);
     if (sidebarStorageKey) window.localStorage.setItem(sidebarStorageKey, String(Math.round(width)));
   };
-
-  React.useEffect(() => {
-    if (!sidebarCollapsed) savedSidebarWidthRef.current = sidebarWidth;
-  }, [sidebarWidth, sidebarCollapsed]);
-
-  const toggleSidebarCollapsed = React.useCallback(() => {
-    setSidebarCollapsed((prev) => {
-      const next = !prev;
-      if (next) {
-        savedSidebarWidthRef.current = sidebarWidth;
-      } else {
-        setPersistedSidebarWidth(savedSidebarWidthRef.current || sidebarSize.default);
-      }
-      if (collapseStorageKey) window.localStorage.setItem(collapseStorageKey, next ? "1" : "0");
-      return next;
-    });
-  }, [sidebarWidth, sidebarSize.default, collapseStorageKey]);
-
-  const effectiveSidebarWidth = sidebarCollapsed ? 0 : sidebarWidth;
-  const effectiveSidebarMin = sidebarCollapsed ? 0 : sidebarMin;
-  const effectiveSidebarMax = sidebarCollapsed ? 0 : sidebarMax;
 
   const startSidebarResize = (event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -333,57 +295,33 @@ export function SplitView({
   const resetSidebarWidth = () => setPersistedSidebarWidth(sidebarSize.default);
 
   return (
-    <SidebarCollapseContext.Provider value={{ collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed }}>
-      <div className={cn("relative flex h-full overflow-hidden", className)}>
-        {sidebar && (
+    <div className={cn("flex h-full overflow-hidden", className)}>
+      {sidebar && (
+        <div
+          style={{ width: sidebarWidth, minWidth: sidebarMin, maxWidth: sidebarMax }}
+          className="relative shrink-0 h-full overflow-hidden"
+        >
+          {sidebar}
           <div
-            style={{
-              width: effectiveSidebarWidth,
-              minWidth: effectiveSidebarMin,
-              maxWidth: effectiveSidebarMax,
-            }}
-            className={cn(
-              "relative h-full shrink-0 overflow-hidden transition-[width] duration-200 ease-out",
-              sidebarCollapsed && "border-r-0",
-            )}
-          >
-            {sidebar}
-            {!sidebarCollapsed && (
-              <div
-                role="separator"
-                aria-orientation="vertical"
-                aria-label="Resize sidebar"
-                className="absolute inset-y-0 right-0 z-20 w-1 cursor-col-resize bg-transparent hover:bg-blue-500/40"
-                onDoubleClick={resetSidebarWidth}
-                onPointerDown={startSidebarResize}
-              />
-            )}
-          </div>
-        )}
-        {sidebarCollapsed && (
-          <div className="group/collapsed-rail pointer-events-auto absolute inset-y-0 left-0 z-30 flex w-2 items-start justify-center pt-1 hover:w-10">
-            <button
-              type="button"
-              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-black/55 opacity-0 transition-all hover:text-foreground group-hover/collapsed-rail:opacity-100 dark:text-white/50"
-              onClick={toggleSidebarCollapsed}
-              aria-label="Expand sidebar"
-              title="Expand sidebar"
-            >
-              <PanelLeftOpen size={16} />
-            </button>
-          </div>
-        )}
-        <div className="min-w-0 h-full flex-1 overflow-hidden">{children}</div>
-        {inspector && (
-          <div
-            style={{ width: inspectorSize.default, minWidth: inspectorSize.min, maxWidth: inspectorSize.max }}
-            className="h-full shrink-0 overflow-hidden border-l border-black/[0.12] dark:border-white/8"
-          >
-            {inspector}
-          </div>
-        )}
-      </div>
-    </SidebarCollapseContext.Provider>
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize sidebar"
+            className="absolute inset-y-0 right-0 z-20 w-1 cursor-col-resize bg-transparent hover:bg-blue-500/40"
+            onDoubleClick={resetSidebarWidth}
+            onPointerDown={startSidebarResize}
+          />
+        </div>
+      )}
+      <div className="flex-1 min-w-0 h-full overflow-hidden">{children}</div>
+      {inspector && (
+        <div
+          style={{ width: inspectorSize.default, minWidth: inspectorSize.min, maxWidth: inspectorSize.max }}
+          className="shrink-0 h-full overflow-hidden border-l border-black/[0.12] dark:border-white/8"
+        >
+          {inspector}
+        </div>
+      )}
+    </div>
   );
 }
 
