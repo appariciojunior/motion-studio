@@ -51,7 +51,6 @@ export function HomeView() {
   const activeIndex = libraryItems.findIndex((entry) => entry.id === activeId);
   const previousItem = libraryItems[(activeIndex - 1 + libraryItems.length) % libraryItems.length];
   const nextItem = libraryItems[(activeIndex + 1) % libraryItems.length];
-  const controls = item.kind === "effect" ? item.effect.controls : item.treatment.controls;
   const params = paramsMap[activeId];
 
   const handleSelect = (id: string) => {
@@ -68,11 +67,6 @@ export function HomeView() {
       ...prev,
       [activeId]: { ...prev[activeId], [id]: value },
     }));
-  };
-
-  const handleReset = () => {
-    setParamsMap((prev) => ({ ...prev, [activeId]: defaultParams(controls) }));
-    setReplayToken((token) => token + 1);
   };
 
   const handlePickSample = (sample: SampleImage) => {
@@ -104,14 +98,12 @@ export function HomeView() {
               effect={item.effect}
               params={params}
               onChange={handleChange}
-              onReset={handleReset}
             />
           ) : (
             <TreatmentPanel
               treatment={item.treatment}
               params={params}
               onChange={handleChange}
-              onReset={handleReset}
               sourceId={sourceId}
               onPickSample={handlePickSample}
               onPickFile={handlePickFile}

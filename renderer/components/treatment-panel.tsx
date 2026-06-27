@@ -6,7 +6,7 @@ import {
   SegmentedControl,
   SegmentedControlItem,
 } from "@glaze/core/components";
-import { RotateCcw, ImageUp, Check } from "lucide-react";
+import { ImageUp, Check } from "lucide-react";
 import { cn } from "@glaze/core/utils";
 import { ColorPresetGrid, ControlRow, LabeledSlider } from "./control-row";
 import { CurveEditor } from "./curve-editor";
@@ -19,7 +19,6 @@ interface TreatmentPanelProps {
   treatment: Treatment;
   params: EffectParams;
   onChange: (id: string, value: ParamValue) => void;
-  onReset: () => void;
   sourceId: string;
   onPickSample: (sample: SampleImage) => void;
   onPickFile: (file: File) => void;
@@ -156,7 +155,6 @@ export function TreatmentPanel({
   treatment,
   params,
   onChange,
-  onReset,
   sourceId,
   onPickSample,
   onPickFile,
@@ -172,17 +170,6 @@ export function TreatmentPanel({
           <h2 className="text-strong">{treatment.name}</h2>
           <p className="text-small text-secondary mt-0.5">{treatment.description}</p>
         </div>
-        <Button
-          variant="transparent"
-          size="small"
-          iconOnly
-          className="shrink-0 text-secondary"
-          title="Reset to defaults"
-          aria-label="Reset to defaults"
-          onClick={onReset}
-        >
-          <RotateCcw size={15} />
-        </Button>
       </div>
       <Separator />
       <div className="flex-1 overflow-y-auto px-4 pt-3 pb-4 flex flex-col gap-4">
