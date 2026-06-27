@@ -31,7 +31,7 @@ export function AppearanceToggle() {
   return (
     <button
       type="button"
-      className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-black/55 transition-colors hover:text-foreground dark:text-white/50"
+      className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-black/55 transition-colors hover:bg-black/[0.07] hover:text-foreground dark:text-white/50 dark:hover:bg-white/[0.07] dark:hover:text-white"
       onClick={toggle}
       aria-label={label}
       title={label}
