@@ -64,6 +64,7 @@ export function HomeView() {
 
   const handleReset = () => {
     setParamsMap((prev) => ({ ...prev, [activeId]: defaultParams(controls) }));
+    setReplayToken((token) => token + 1);
   };
 
   const handlePickSample = (sample: SampleImage) => {
