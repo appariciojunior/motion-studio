@@ -131,7 +131,7 @@ export function Sidebar({ children, className }: { children?: React.ReactNode; c
 
 export function SidebarList({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("sidebar-scroll flex-1 overflow-y-auto py-2", className)}>
+    <div className={cn("sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden py-2", className)}>
       {children}
     </div>
   );
