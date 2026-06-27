@@ -37,6 +37,9 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
   const [format, setFormat] = React.useState<Format>("react");
   const [copied, setCopied] = React.useState(false);
   const [wrapText, setWrapText] = React.useState(false);
+  const [canWrap, setCanWrap] = React.useState(false);
+  const preRef = React.useRef<HTMLPreElement>(null);
+  const measureRef = React.useRef<HTMLPreElement>(null);
 
   // Fall back to React when switching to an effect that lacks the active format.
   React.useEffect(() => {
@@ -56,6 +59,30 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
     }
     return effect.exports.react(params);
   }, [effect, params, format]);
+
+  React.useLayoutEffect(() => {
+    const updateWrapAvailability = () => {
+      const pre = preRef.current;
+      const measure = measureRef.current;
+      if (!pre || !measure) return;
+
+      const nextCanWrap = measure.scrollWidth > pre.clientWidth + 1;
+      setCanWrap(nextCanWrap);
+      if (!nextCanWrap) setWrapText(false);
+    };
+
+    updateWrapAvailability();
+
+    const observer = new ResizeObserver(updateWrapAvailability);
+    if (preRef.current) observer.observe(preRef.current);
+    if (measureRef.current) observer.observe(measureRef.current);
+    window.addEventListener("resize", updateWrapAvailability);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateWrapAvailability);
+    };
+  }, [content]);
 
   const handleCopy = async () => {
     const ok = await copyToClipboard(content);
@@ -86,22 +113,32 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
             </Tabs>
           </TabsRoot>
           <div className="relative mt-3">
-            <Button
-              variant="default"
-              size="small"
-              iconOnly
-              className="absolute top-3 right-7 z-10 backdrop-blur-sm"
-              aria-label={wrapText ? "Disable text wrapping" : "Wrap text"}
-              aria-pressed={wrapText}
-              title={wrapText ? "Disable text wrapping" : "Wrap text"}
-              onClick={() => setWrapText((current) => !current)}
-            >
-              <WrapText size={14} />
-            </Button>
+            {canWrap && (
+              <Button
+                variant="default"
+                size="small"
+                iconOnly
+                className="absolute top-3 right-7 z-10 backdrop-blur-sm"
+                aria-label={wrapText ? "Disable text wrapping" : "Wrap text"}
+                aria-pressed={wrapText}
+                title={wrapText ? "Disable text wrapping" : "Wrap text"}
+                onClick={() => setWrapText((current) => !current)}
+              >
+                <WrapText size={14} />
+              </Button>
+            )}
             <pre
+              ref={preRef}
               className={`h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-16 font-mono text-small leading-relaxed ${
                 wrapText ? "whitespace-pre-wrap break-words" : "whitespace-pre"
               }`}
+            >
+              <code>{content}</code>
+            </pre>
+            <pre
+              ref={measureRef}
+              aria-hidden
+              className="pointer-events-none invisible absolute inset-x-0 top-0 h-0 overflow-hidden rounded-md border border-transparent p-4 pr-16 font-mono text-small leading-relaxed whitespace-pre"
             >
               <code>{content}</code>
             </pre>
