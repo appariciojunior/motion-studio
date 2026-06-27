@@ -371,16 +371,16 @@ export function Switch({ checked, onCheckedChange, className }: SwitchProps) {
       checked={checked}
       onCheckedChange={onCheckedChange}
       className={cn(
-        "inline-flex h-5 w-9 shrink-0 cursor-default rounded-full border-2 border-transparent",
+        "inline-flex h-6 w-11 shrink-0 cursor-default items-center rounded-md border border-separator p-0.5",
         "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-        checked ? "bg-blue-500" : "bg-black/15 dark:bg-white/15",
+        checked ? "bg-blue-500" : "bg-black/5 dark:bg-white/10",
         className,
       )}
     >
       <RadixSwitch.Thumb
         className={cn(
-          "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-md ring-0 transition-transform",
-          checked ? "translate-x-4" : "translate-x-0",
+          "pointer-events-none block h-4 w-4 rounded-sm bg-white shadow-sm ring-0 transition-transform",
+          checked ? "translate-x-5" : "translate-x-0",
         )}
       />
     </RadixSwitch.Root>

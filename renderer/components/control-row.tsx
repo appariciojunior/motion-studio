@@ -147,8 +147,8 @@ export function ControlRow({
     }
     case "switch":
       return (
-        <div className="flex items-center justify-between">
-          <span className="text-small text-secondary">{control.label}</span>
+        <div className="flex h-9 items-center justify-between rounded-md border border-separator bg-black/5 px-3 dark:bg-white/5">
+          <span className="text-small font-medium text-secondary">{control.label}</span>
           <Switch
             checked={params[control.id] === true}
             onCheckedChange={(checked) => onChange(control.id, checked)}
