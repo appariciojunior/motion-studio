@@ -111,7 +111,59 @@ body {
 }
 
 .sidebar-scroll {
+  --sidebar-fade-size: 4rem;
   scrollbar-color: color-mix(in oklch, var(--color-foreground) 32%, transparent) transparent;
+}
+
+.sidebar-scroll-fade-top {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size)
+  );
+}
+
+.sidebar-scroll-fade-bottom {
+  -webkit-mask-image: linear-gradient(
+    to top,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size)
+  );
+  mask-image: linear-gradient(
+    to top,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size)
+  );
+}
+
+.sidebar-scroll-fade-top.sidebar-scroll-fade-bottom {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size),
+    #000 calc(100% - var(--sidebar-fade-size)),
+    #000 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 12%,
+    #000 var(--sidebar-fade-size),
+    #000 calc(100% - var(--sidebar-fade-size)),
+    #000 88%,
+    transparent 100%
+  );
 }
 
 .sidebar-scroll::-webkit-scrollbar {
