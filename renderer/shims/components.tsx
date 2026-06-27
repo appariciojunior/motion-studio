@@ -131,9 +131,42 @@ export function Sidebar({ children, className }: { children?: React.ReactNode; c
 }
 
 export function SidebarList({ children, className }: { children?: React.ReactNode; className?: string }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [showBottomFade, setShowBottomFade] = React.useState(false);
+
+  const updateBottomFade = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const canScroll = el.scrollHeight > el.clientHeight + 1;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 2;
+    setShowBottomFade(canScroll && !atBottom);
+  }, []);
+
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateBottomFade();
+    const observer = new ResizeObserver(updateBottomFade);
+    observer.observe(el);
+    el.addEventListener("scroll", updateBottomFade, { passive: true });
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("scroll", updateBottomFade);
+    };
+  }, [updateBottomFade, children]);
+
   return (
-    <div className={cn("sidebar-scroll flex-1 overflow-y-auto overflow-x-hidden py-2", className)}>
-      {children}
+    <div className={cn("relative flex-1 min-h-0", className)}>
+      <div ref={scrollRef} className="sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2">
+        {children}
+      </div>
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-black/[0.045] to-transparent transition-opacity duration-150 dark:from-white/3",
+          showBottomFade ? "opacity-100" : "opacity-0",
+        )}
+      />
     </div>
   );
 }
