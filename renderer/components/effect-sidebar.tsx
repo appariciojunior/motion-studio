@@ -10,8 +10,12 @@ interface EffectSidebarProps {
 export function EffectSidebar({ selectedId, onSelect }: EffectSidebarProps) {
   const groups = React.useMemo(() => libraryGroups(), []);
   const [collapsedGroups, setCollapsedGroups] = React.useState<Record<string, boolean>>({});
+  const previousSelectedId = React.useRef(selectedId);
 
   React.useEffect(() => {
+    if (previousSelectedId.current === selectedId) return;
+    previousSelectedId.current = selectedId;
+
     const activeGroup = groups.find((group) => group.items.some((item) => item.id === selectedId));
     if (!activeGroup || !collapsedGroups[activeGroup.title]) return;
     setCollapsedGroups((prev) => ({ ...prev, [activeGroup.title]: false }));
