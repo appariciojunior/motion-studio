@@ -1,0 +1,19 @@
+/*
+ * Glaze framework styles (@import "@glaze/core/..." and @import "tailwindcss")
+ * are automatically injected before this file during build and dev.
+ * Add your custom styles and @source directives below.
+ */
+
+/* Tell Tailwind to scan local renderer files for class names */
+@source "./main/**/*.{ts,tsx}";
+@source "./settings/**/*.{ts,tsx}";
+@source "./components/**/*.{ts,tsx}";
+
+/* Subtle dotted backdrop for the live preview stage */
+.motion-stage {
+  background-image: radial-gradient(
+    var(--color-separator, rgba(128, 128, 128, 0.18)) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}

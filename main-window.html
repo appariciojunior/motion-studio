@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App</title>
+    <script>
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+    <style>
+      :root {
+        --background: hsl(0 0% 100% / 0.9);
+      }
+      .dark {
+        --background: hsl(0 0% 0% / 0.4);
+      }
+      body {
+        background: var(--background);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Preload is injected by the native layer via webPreferences.preload -->
+    <script type="module" src="./renderer/main/index.tsx"></script>
+  </body>
+</html>

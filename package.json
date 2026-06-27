@@ -1,0 +1,68 @@
+{
+  "id": "2b6tsggj",
+  "name": "motion-studio",
+  "version": "1.0.0",
+  "productName": "Motion Studio",
+  "description": "Design and customize web animations",
+  "iconDescription": "A comprehensive animation design studio for creating interactive motion effects like shimmer animations, overlays, modals, skeleton loading, and page transitions. Users can configure effects with real-time sliders and controls, preview results, and export production-ready code. Think of a motion designer's control panel, animated UI elements in flux, or a playback interface with adjustment knobs. The Glaze design system aesthetic provides a cohesive visual foundation. Aesthetic: professional, interactive, design-focused.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node glaze.ts build",
+    "dev": "node glaze.ts dev",
+    "dev:renderer": "node glaze.ts dev:renderer",
+    "lint": "node glaze.ts lint",
+    "type-check": "node glaze.ts type-check",
+    "format": "node glaze.ts format"
+  },
+  "dependencies": {
+    "@radix-ui/colors": "^3.0.0",
+    "@tanstack/react-query": "^5.87.4",
+    "@tanstack/react-router": "^1.131.36",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "gifenc": "^1.0.3",
+    "lucide-react": "^0.542.0",
+    "motion": "^11.18.2",
+    "radix-ui": "^1.4.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@rolldown/plugin-babel": "^0.2.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^24.3.1",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "esbuild": "^0.27.4",
+    "eslint": "^9.39.2",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^17.3.0",
+    "oxfmt": "^0.26.0",
+    "tailwindcss": "^4.2.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.5.3",
+    "vite": "^8.0.2"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "npm@11.11.0+sha512-82gRxKrh/eY5UnNorkTFcdBQAGpgjWehkfGVqAGlJjejEtJZGGJUqjo3mbBTNbc5BTnPKGVtGPBZGhElujX5cw==",
+  "glaze": {
+    "capabilities": {},
+    "sdkVersion": "0.7.0.0",
+    "createdAt": "2026-06-25T21:58:13.384Z",
+    "lastMigration": "cli-js-entry",
+    "host": {
+      "minVersion": "0.7.0.0"
+    },
+    "updatedAt": 1782564403759
+  }
+}
