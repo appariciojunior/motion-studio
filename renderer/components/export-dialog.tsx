@@ -90,7 +90,7 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
               variant="default"
               size="small"
               iconOnly
-              className="absolute top-2 right-2 z-10 backdrop-blur-sm"
+              className="absolute top-3 right-7 z-10 backdrop-blur-sm"
               aria-label={wrapText ? "Disable text wrapping" : "Wrap text"}
               aria-pressed={wrapText}
               title={wrapText ? "Disable text wrapping" : "Wrap text"}
@@ -99,7 +99,7 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
               <WrapText size={14} />
             </Button>
             <pre
-              className={`h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-12 font-mono text-small leading-relaxed ${
+              className={`h-[46vh] overflow-auto rounded-md bg-control border border-separator p-4 pr-16 font-mono text-small leading-relaxed ${
                 wrapText ? "whitespace-pre-wrap break-words" : "whitespace-pre"
               }`}
             >
