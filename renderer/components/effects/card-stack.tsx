@@ -82,7 +82,7 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
                   x: 320,
                   opacity: 0,
                   rotate: rot + 15,
-                  transition: { duration, ease: "easeInOut" },
+                  transition: { duration, ease: [0.77, 0, 0.175, 1] },
                 }}
                 transition={{ duration, type: "spring", stiffness: 200, damping: 24 }}
                 onClick={isTop ? dismissTop : undefined}
@@ -163,7 +163,7 @@ export function CardStack({ cards }: { cards: React.ReactNode[] }) {
                 x: 320,
                 opacity: 0,
                 rotate: rot + 15,
-                transition: { duration: ${n(p.duration)}, ease: "easeInOut" },
+                transition: { duration: ${n(p.duration)}, ease: [0.77, 0, 0.175, 1] },
               }}
               transition={{ duration: ${n(p.duration)}, type: "spring", stiffness: 200, damping: 24 }}
               onClick={isTop ? dismissTop : undefined}

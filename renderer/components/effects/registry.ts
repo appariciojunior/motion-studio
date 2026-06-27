@@ -22,6 +22,7 @@ import { textShimmerEffect } from "./text-shimmer";
 import { textScrambleEffect } from "./text-scramble";
 import { typewriterEffect } from "./typewriter";
 import { wavyTextEffect } from "./wavy-text";
+import { textGlitchEffect } from "./text-glitch";
 import { splitTextEffect } from "./split-text";
 import { morphingTextEffect } from "./morphing-text";
 import { rollingTextEffect } from "./rolling-text";
@@ -64,6 +65,7 @@ import { cardStackEffect } from "./card-stack";
 import { tickerMarqueeEffect } from "./ticker-marquee";
 import { staggeredGridEffect } from "./staggered-grid";
 import { reorderListEffect } from "./reorder-list";
+import { momentumCarouselEffect } from "./momentum-carousel";
 import { copyButtonEffect } from "./copy-button";
 import { rippleButtonEffect } from "./ripple-button";
 import { liquidButtonEffect } from "./liquid-button";
@@ -75,6 +77,14 @@ import { imageRevealSliderEffect } from "./image-reveal-slider";
 import { scrollRevealEffect } from "./scroll-reveal";
 import { floatingActionButtonEffect } from "./floating-action-button";
 import { pathDrawingEffect } from "./path-drawing";
+import { elasticDragEffect } from "./elastic-drag";
+import { magneticCursorEffect } from "./magnetic-cursor";
+import { statCardsEffect } from "./stat-cards";
+import { cube3dEffect } from "./cube-3d";
+import { particleEmitterEffect } from "./particle-emitter";
+import { spotlightEffect } from "./spotlight";
+import { kineticTextEffect } from "./kinetic-text";
+import { perspectiveGridEffect } from "./perspective-grid";
 
 export const effects: Effect[] = [
   // Text effects
@@ -88,6 +98,8 @@ export const effects: Effect[] = [
   rollingTextEffect,
   highlightTextEffect,
   fillTextEffect,
+  textGlitchEffect,
+  kineticTextEffect,
   // Loading & feedback
   shimmerEffect,
   skeletonEffect,
@@ -108,6 +120,8 @@ export const effects: Effect[] = [
   meshGradientEffect,
   dotGridEffect,
   floatingBlobsEffect,
+  spotlightEffect,
+  perspectiveGridEffect,
   // Overlays & dialogs
   overlaysEffect,
   modalsEffect,
@@ -126,6 +140,7 @@ export const effects: Effect[] = [
   tickerMarqueeEffect,
   staggeredGridEffect,
   reorderListEffect,
+  momentumCarouselEffect,
   // Micro-interactions
   hoverCardEffect,
   counterEffect,
@@ -137,6 +152,7 @@ export const effects: Effect[] = [
   magneticButtonEffect,
   likeBurstEffect,
   cursorTrailEffect,
+  magneticCursorEffect,
   bobbleHoverEffect,
   flipCardEffect,
   cardStackEffect,
@@ -148,6 +164,7 @@ export const effects: Effect[] = [
   swipeActionsEffect,
   floatingActionButtonEffect,
   imageRevealSliderEffect,
+  elasticDragEffect,
   // Transitions & lists (continued)
   scrollRevealEffect,
   notificationStackEffect,
@@ -159,10 +176,13 @@ export const effects: Effect[] = [
   exposureCarouselEffect,
   // Heroes
   ossHeroEffect,
+  statCardsEffect,
   // Experimental
   warpOverlayEffect,
   appleWatchEffect,
   pathDrawingEffect,
+  cube3dEffect,
+  particleEmitterEffect,
 ];
 
 export function getEffect(id: string): Effect | undefined {

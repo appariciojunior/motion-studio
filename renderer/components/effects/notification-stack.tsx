@@ -79,7 +79,7 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
             initial={{ opacity: 0, y: -24, x: 0 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, x: 60 }}
-            transition={{ duration, ease: "easeOut" }}
+            transition={{ duration, ease: [0.23, 1, 0.32, 1] }}
             style={{
               width: "100%",
               background: "var(--card, #fff)",

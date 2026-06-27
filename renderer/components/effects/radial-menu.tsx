@@ -79,9 +79,9 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
           positions.map((pos, i) => (
             <motion.div
               key={i}
-              initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+              initial={{ scale: 0.95, opacity: 0, x: 0, y: 0 }}
               animate={{ scale: 1, opacity: 1, x: pos.x, y: pos.y }}
-              exit={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, x: 0, y: 0 }}
               transition={{
                 duration,
                 delay: i * stagger,
@@ -143,9 +143,9 @@ export function RadialMenu({ color = "${p.color}" }) {
         {open && positions.map((pos, i) => (
           <motion.div
             key={i}
-            initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+            initial={{ scale: 0.95, opacity: 0, x: 0, y: 0 }}
             animate={{ scale: 1, opacity: 1, x: pos.x, y: pos.y }}
-            exit={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, x: 0, y: 0 }}
             transition={{ duration: ${n(p.duration)}, delay: i * ${n(p.stagger)}, ease: "backOut" }}
             style={{ position: "absolute", width: ${n(p.itemSize)}, height: ${n(p.itemSize)}, borderRadius: "50%", background: color, opacity: 0.85 }}
           />

@@ -84,6 +84,37 @@ body {
   app-region: drag;
 }
 
+/* Button press feedback — scale-down on active, matching Emil's 0.97 rule */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 0.16s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+button {
+  transition: transform 0.16s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Reduced motion — keep opacity/color transitions, strip positional movement */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.3s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.3s !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gate hover-transform motion to devices with a real pointer */
+@media not all and (hover: hover) and (pointer: fine) {
+  [class*="hover:scale"],
+  [class*="hover:-translate"],
+  [class*="hover:translate"] {
+    transform: none !important;
+  }
+}
+
 /* Subtle dotted backdrop for the live preview stage */
 .motion-stage {
   background-image: radial-gradient(

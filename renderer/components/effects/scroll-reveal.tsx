@@ -45,7 +45,7 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
   const transition = (index: number) =>
     easing === "spring"
       ? { type: "spring" as const, stiffness: 260, damping: 20, delay: index * stagger }
-      : { duration, ease: "easeOut" as const, delay: index * stagger };
+      : { duration, ease: [0.23, 1, 0.32, 1] as const, delay: index * stagger };
 
   return (
     <div
