@@ -160,16 +160,17 @@ export function SidebarList({ children, className }: { children?: React.ReactNod
 
   return (
     <div className={cn("relative flex-1 min-h-0", className)}>
-      <div
-        ref={scrollRef}
-        className={cn(
-          "sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2",
-          showTopFade && "sidebar-scroll-fade-top",
-          showBottomFade && "sidebar-scroll-fade-bottom",
-        )}
-      >
+      <div ref={scrollRef} className="sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2">
         {children}
       </div>
+      <div
+        aria-hidden
+        className={cn("sidebar-fade sidebar-fade-top", showTopFade && "is-visible")}
+      />
+      <div
+        aria-hidden
+        className={cn("sidebar-fade sidebar-fade-bottom", showBottomFade && "is-visible")}
+      />
     </div>
   );
 }

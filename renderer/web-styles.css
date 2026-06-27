@@ -111,57 +111,42 @@ body {
 }
 
 .sidebar-scroll {
-  --sidebar-fade-size: 4rem;
+  --sidebar-fade-size: 2.25rem;
   scrollbar-color: color-mix(in oklch, var(--color-foreground) 32%, transparent) transparent;
 }
 
-.sidebar-scroll-fade-top {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size)
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size)
-  );
+.sidebar-fade {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  z-index: 10;
+  height: var(--sidebar-fade-size);
+  opacity: 0;
+  transition: opacity 150ms ease;
 }
 
-.sidebar-scroll-fade-bottom {
-  -webkit-mask-image: linear-gradient(
-    to top,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size)
-  );
-  mask-image: linear-gradient(
-    to top,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size)
-  );
+.sidebar-fade.is-visible {
+  opacity: 1;
 }
 
-.sidebar-scroll-fade-top.sidebar-scroll-fade-bottom {
-  -webkit-mask-image: linear-gradient(
+.sidebar-fade-top {
+  top: 0;
+  background: linear-gradient(
     to bottom,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size),
-    #000 calc(100% - var(--sidebar-fade-size)),
-    #000 88%,
+    color-mix(in oklch, var(--color-background) 82%, transparent) 0%,
+    color-mix(in oklch, var(--color-background) 48%, transparent) 38%,
+    color-mix(in oklch, var(--color-background) 14%, transparent) 68%,
     transparent 100%
   );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 12%,
-    #000 var(--sidebar-fade-size),
-    #000 calc(100% - var(--sidebar-fade-size)),
-    #000 88%,
+}
+
+.sidebar-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-background) 82%, transparent) 0%,
+    color-mix(in oklch, var(--color-background) 48%, transparent) 38%,
+    color-mix(in oklch, var(--color-background) 14%, transparent) 68%,
     transparent 100%
   );
 }
