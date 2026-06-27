@@ -1,5 +1,5 @@
 import { Button } from "@glaze/core/components";
-import { CircleDot, Grid2X2, Laptop, Minus, Moon, Plus, Square, Sun } from "lucide-react";
+import { CircleDot, Grid2X2, Minus, Plus, Square } from "lucide-react";
 
 export type StageBackgroundMode = "dots" | "grid" | "solid";
 export type StageCanvasTone = "system" | "light" | "dark";
@@ -13,8 +13,17 @@ interface StageCanvasControlsProps {
   onZoomChange: (zoom: number) => void;
 }
 
-const BACKGROUND_MODES: StageBackgroundMode[] = ["dots", "grid", "solid"];
-const CANVAS_TONES: StageCanvasTone[] = ["system", "dark", "light"];
+const CANVAS_PRESETS: Array<{ mode: StageBackgroundMode; tone: StageCanvasTone }> = [
+  { mode: "dots", tone: "system" },
+  { mode: "grid", tone: "system" },
+  { mode: "solid", tone: "system" },
+  { mode: "dots", tone: "dark" },
+  { mode: "grid", tone: "dark" },
+  { mode: "solid", tone: "dark" },
+  { mode: "dots", tone: "light" },
+  { mode: "grid", tone: "light" },
+  { mode: "solid", tone: "light" },
+];
 
 export function StageCanvasControls({
   backgroundMode,
@@ -24,12 +33,17 @@ export function StageCanvasControls({
   onCanvasToneChange,
   onZoomChange,
 }: StageCanvasControlsProps) {
-  const nextMode = BACKGROUND_MODES[(BACKGROUND_MODES.indexOf(backgroundMode) + 1) % BACKGROUND_MODES.length];
-  const nextTone = CANVAS_TONES[(CANVAS_TONES.indexOf(canvasTone) + 1) % CANVAS_TONES.length];
+  const currentPresetIndex = CANVAS_PRESETS.findIndex(
+    (preset) => preset.mode === backgroundMode && preset.tone === canvasTone,
+  );
+  const nextPreset = CANVAS_PRESETS[(Math.max(0, currentPresetIndex) + 1) % CANVAS_PRESETS.length];
   const zoomOut = () => onZoomChange(Math.max(0.5, Number((zoom - 0.1).toFixed(2))));
   const zoomIn = () => onZoomChange(Math.min(2, Number((zoom + 0.1).toFixed(2))));
   const PatternIcon = backgroundMode === "dots" ? CircleDot : backgroundMode === "grid" ? Grid2X2 : Square;
-  const ToneIcon = canvasTone === "system" ? Laptop : canvasTone === "dark" ? Moon : Sun;
+  const switchCanvasPreset = () => {
+    onBackgroundModeChange(nextPreset.mode);
+    onCanvasToneChange(nextPreset.tone);
+  };
 
   return (
     <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
@@ -38,22 +52,11 @@ export function StageCanvasControls({
         size="small"
         iconOnly
         className="rounded-full"
-        aria-label={`Switch canvas background to ${nextMode}`}
-        title={`Canvas background: ${backgroundMode}`}
-        onClick={() => onBackgroundModeChange(nextMode)}
+        aria-label={`Switch canvas background to ${nextPreset.mode}`}
+        title={`Canvas: ${backgroundMode}, ${canvasTone}`}
+        onClick={switchCanvasPreset}
       >
         <PatternIcon size={15} />
-      </Button>
-      <Button
-        variant="default"
-        size="small"
-        iconOnly
-        className="rounded-full"
-        aria-label={`Switch canvas tone to ${nextTone}`}
-        title={`Canvas tone: ${canvasTone}`}
-        onClick={() => onCanvasToneChange(nextTone)}
-      >
-        <ToneIcon size={15} />
       </Button>
       <div className="mx-1 h-4 w-px bg-black/12 dark:bg-white/12" />
       <Button
