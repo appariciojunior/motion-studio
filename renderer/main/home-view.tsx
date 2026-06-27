@@ -10,6 +10,7 @@ import { PreviewStage } from "../components/preview-stage";
 import { ExportDialog } from "../components/export-dialog";
 import { TreatmentPanel } from "../components/treatment-panel";
 import { TreatmentStage } from "../components/treatment-stage";
+import type { StageBackgroundMode } from "../components/stage-canvas-controls";
 import { SAMPLE_IMAGES, loadSample, loadFile, type SampleImage } from "../lib/source-image";
 import { defaultAnimation, type AnimationSettings } from "../lib/anim";
 
@@ -25,6 +26,8 @@ export function HomeView() {
   const [paramsMap, setParamsMap] = React.useState<Record<string, EffectParams>>(buildInitialParams);
   const [replayToken, setReplayToken] = React.useState(0);
   const [exportOpen, setExportOpen] = React.useState(false);
+  const [stageBackgroundMode, setStageBackgroundMode] = React.useState<StageBackgroundMode>("dots");
+  const [stageZoom, setStageZoom] = React.useState(1);
 
   // Shared source image for the treatment lab.
   const [sourceId, setSourceId] = React.useState(SAMPLE_IMAGES[0].id);
@@ -147,6 +150,10 @@ export function HomeView() {
             replayToken={replayToken}
             previousLabel={previousItem.name}
             nextLabel={nextItem.name}
+            backgroundMode={stageBackgroundMode}
+            zoom={stageZoom}
+            onBackgroundModeChange={setStageBackgroundMode}
+            onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}
             onReplay={() => setReplayToken((t) => t + 1)}
@@ -161,6 +168,10 @@ export function HomeView() {
             replayToken={replayToken}
             previousLabel={previousItem.name}
             nextLabel={nextItem.name}
+            backgroundMode={stageBackgroundMode}
+            zoom={stageZoom}
+            onBackgroundModeChange={setStageBackgroundMode}
+            onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}
             onReplay={() => setReplayToken((t) => t + 1)}

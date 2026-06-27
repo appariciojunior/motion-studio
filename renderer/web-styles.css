@@ -179,11 +179,22 @@ button {
   }
 }
 
-/* Subtle dotted backdrop for the live preview stage */
-.motion-stage {
+.motion-stage[data-bg-mode="dots"],
+.motion-stage:not([data-bg-mode]) {
   background-image: radial-gradient(
     color-mix(in oklch, var(--color-foreground) 14%, transparent) 1px,
     transparent 1px
   );
   background-size: 16px 16px;
+}
+
+.motion-stage[data-bg-mode="grid"] {
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--color-foreground) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-foreground) 10%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.motion-stage[data-bg-mode="solid"] {
+  background-image: none;
 }

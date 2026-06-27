@@ -11,6 +11,7 @@ import { ChevronLeft, ChevronRight, RotateCcw, Download, Check, ImageUp, Loader2
 import type { Treatment } from "./treatments/types";
 import type { EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
+import { StageCanvasControls, type StageBackgroundMode } from "./stage-canvas-controls";
 import { downloadCanvasPng } from "../lib/image-export";
 import {
   applyAnimation,
@@ -34,6 +35,10 @@ interface TreatmentStageProps {
   replayToken: number;
   previousLabel: string;
   nextLabel: string;
+  backgroundMode: StageBackgroundMode;
+  zoom: number;
+  onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
   onReplay: () => void;
@@ -65,6 +70,10 @@ export function TreatmentStage({
   replayToken,
   previousLabel,
   nextLabel,
+  backgroundMode,
+  zoom,
+  onBackgroundModeChange,
+  onZoomChange,
   onPrevious,
   onNext,
   onReplay,
@@ -185,6 +194,7 @@ export function TreatmentStage({
     <div className="h-full flex flex-col">
       <div
         className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
+        data-bg-mode={backgroundMode}
         onDragOver={(e) => {
           if (treatment.needsSource) {
             e.preventDefault();
@@ -225,16 +235,19 @@ export function TreatmentStage({
           <AppearanceToggle />
         </div>
         {missingSource ? (
-          <EmptyState>
-            <EmptyStateTitle>No image yet</EmptyStateTitle>
-            <EmptyStateDescription>
-              Pick a sample or drop an image to start treating it.
-            </EmptyStateDescription>
-          </EmptyState>
+          <div className="transition-transform" style={{ transform: `scale(${zoom})` }}>
+            <EmptyState>
+              <EmptyStateTitle>No image yet</EmptyStateTitle>
+              <EmptyStateDescription>
+                Pick a sample or drop an image to start treating it.
+              </EmptyStateDescription>
+            </EmptyState>
+          </div>
         ) : (
           <canvas
             ref={canvasRef}
-            className="max-w-full max-h-full object-contain rounded-card shadow-lg"
+            className="max-w-full max-h-full object-contain rounded-card shadow-lg transition-transform"
+            style={{ transform: `scale(${zoom})` }}
           />
         )}
 
@@ -280,6 +293,14 @@ export function TreatmentStage({
               {exportLabel()}
             </Button>
           </div>
+        </div>
+        <div className="pointer-events-none absolute bottom-5 right-3 z-20">
+          <StageCanvasControls
+            backgroundMode={backgroundMode}
+            zoom={zoom}
+            onBackgroundModeChange={onBackgroundModeChange}
+            onZoomChange={onZoomChange}
+          />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { Button } from "@glaze/core/components";
 import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
+import { StageCanvasControls, type StageBackgroundMode } from "./stage-canvas-controls";
 
 interface PreviewStageProps {
   effect: Effect;
@@ -9,6 +10,10 @@ interface PreviewStageProps {
   replayToken: number;
   previousLabel: string;
   nextLabel: string;
+  backgroundMode: StageBackgroundMode;
+  zoom: number;
+  onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
   onReplay: () => void;
@@ -36,6 +41,10 @@ export function PreviewStage({
   replayToken,
   previousLabel,
   nextLabel,
+  backgroundMode,
+  zoom,
+  onBackgroundModeChange,
+  onZoomChange,
   onPrevious,
   onNext,
   onReplay,
@@ -44,7 +53,10 @@ export function PreviewStage({
   const Preview = effect.Preview;
   return (
     <div className="h-full flex flex-col">
-      <div className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10">
+      <div
+        className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
+        data-bg-mode={backgroundMode}
+      >
         <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
           <div className="pointer-events-auto flex max-w-[min(70%,28rem)] items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
             <Button
@@ -79,7 +91,10 @@ export function PreviewStage({
             using `w-full max-w-*` (overlays, dialogs, transitions) expand to
             their intended size instead of collapsing to ~0 in a shrink-to-fit
             wrapper. Intrinsic-size effects stay centered at their natural size. */}
-        <div className="relative flex w-full max-w-2xl items-center justify-center">
+        <div
+          className="relative flex w-full max-w-2xl items-center justify-center transition-transform"
+          style={{ transform: `scale(${zoom})` }}
+        >
           <Preview
             key={`${replayToken}:${timingSignature(effect, params)}`}
             params={params}
@@ -97,6 +112,14 @@ export function PreviewStage({
               Export
             </Button>
           </div>
+        </div>
+        <div className="pointer-events-none absolute bottom-5 right-3 z-20">
+          <StageCanvasControls
+            backgroundMode={backgroundMode}
+            zoom={zoom}
+            onBackgroundModeChange={onBackgroundModeChange}
+            onZoomChange={onZoomChange}
+          />
         </div>
       </div>
     </div>
