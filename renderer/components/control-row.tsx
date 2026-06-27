@@ -106,6 +106,9 @@ export function ColorPresetGrid({
   const currentColors = colorControls.map((control) => String(params[control.id]).toLowerCase());
   const colorCount = colorControls.length;
   const previewPalettes = COLOR_PALETTES.map((palette) => palette.slice(0, colorCount));
+  const colorsChanged = colorControls.some(
+    (control) => control.type === "color" && String(params[control.id]).toLowerCase() !== control.default.toLowerCase(),
+  );
   const applyPalette = (palette: string[]) => {
     colorControls.forEach((control, index) => {
       onChange(control.id, palette[index % palette.length]);
@@ -122,9 +125,15 @@ export function ColorPresetGrid({
       <div className="flex items-center justify-between gap-2">
         <span className="text-small text-secondary">Presets</span>
         <div className="flex items-center gap-1">
-          <Button variant="default" size="small" onClick={resetColors}>
-            Reset
-          </Button>
+          {colorsChanged && (
+            <button
+              type="button"
+              className="h-6 px-1 text-small font-medium text-secondary hover:text-foreground"
+              onClick={resetColors}
+            >
+              Reset
+            </button>
+          )}
           <Button
             variant="default"
             size="small"
