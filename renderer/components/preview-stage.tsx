@@ -33,10 +33,10 @@ export function PreviewStage({ effect, params, replayToken, onReplay, onExport }
       <Toolbar position="top">
         <ToolbarRow>
           <ToolbarTitle>{effect.name}</ToolbarTitle>
+          <ToolbarActions>
+            <AppearanceToggle />
+          </ToolbarActions>
         </ToolbarRow>
-        <ToolbarActions>
-          <AppearanceToggle />
-        </ToolbarActions>
       </Toolbar>
       <div className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10">
         {/* Give the preview a definite, centered width so panel-style effects

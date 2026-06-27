@@ -33,12 +33,12 @@ export function AppearanceToggle() {
     <Button
       iconOnly
       variant="glass"
-      size="large"
+      size="medium"
       onClick={toggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {isDark ? <Sun /> : <Moon />}
+      {isDark ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   );
 }

@@ -56,10 +56,11 @@ export function Status({ variant = "info", children, className }: StatusProps) {
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "glass" | "accent" | "muted" | "filled" | "default";
   size?: "small" | "medium" | "large";
+  iconOnly?: boolean;
   children?: React.ReactNode;
 }
 
-export function Button({ variant = "default", size = "medium", className, children, ...props }: ButtonProps) {
+export function Button({ variant = "default", size = "medium", iconOnly = false, className, children, ...props }: ButtonProps) {
   const variantClasses = {
     glass:
       "bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 border border-white/20 text-foreground backdrop-blur-sm",
@@ -82,6 +83,7 @@ export function Button({ variant = "default", size = "medium", className, childr
         "disabled:pointer-events-none disabled:opacity-50 cursor-default",
         variantClasses[variant],
         sizeClasses[size],
+        iconOnly && (size === "small" ? "w-6 px-0" : size === "medium" ? "w-8 px-0" : "w-10 px-0"),
         className,
       )}
       {...props}

@@ -182,10 +182,10 @@ export function TreatmentStage({
       <Toolbar position="top">
         <ToolbarRow>
           <ToolbarTitle>{treatment.name}</ToolbarTitle>
+          <ToolbarActions>
+            <AppearanceToggle />
+          </ToolbarActions>
         </ToolbarRow>
-        <ToolbarActions>
-          <AppearanceToggle />
-        </ToolbarActions>
       </Toolbar>
       <div
         className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
