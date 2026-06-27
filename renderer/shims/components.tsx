@@ -145,7 +145,7 @@ interface SidebarListGroupProps {
 
 export function SidebarListGroup({ title, children, className }: SidebarListGroupProps) {
   return (
-    <div className={cn("mb-1", className)}>
+    <div className={cn("mt-4 mb-1 first:mt-0", className)}>
       <div className="px-3 py-1.5 text-xs font-semibold text-black/40 dark:text-white/40 uppercase tracking-wider">
         {title}
       </div>
