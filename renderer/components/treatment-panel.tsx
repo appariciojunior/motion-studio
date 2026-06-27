@@ -3,13 +3,12 @@ import {
   Button,
   Separator,
   Switch,
-  Slider,
   SegmentedControl,
   SegmentedControlItem,
 } from "@glaze/core/components";
 import { RotateCcw, ImageUp, Check } from "lucide-react";
 import { cn } from "@glaze/core/utils";
-import { ControlRow } from "./control-row";
+import { ControlRow, LabeledSlider } from "./control-row";
 import { CurveEditor } from "./curve-editor";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams, ParamValue } from "./effects/types";
@@ -66,21 +65,15 @@ function AnimationControls({
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-small text-secondary">Duration</span>
-              <span className="text-small text-secondary tabular-nums">{anim.duration}s</span>
-            </div>
-            <Slider
-              variant="filled"
-              size="small"
-              min={0.5}
-              max={6}
-              step={0.5}
-              value={[anim.duration]}
-              onValueChange={([v]) => onAnimChange({ duration: v })}
-            />
-          </div>
+          <LabeledSlider
+            label="Duration"
+            value={anim.duration}
+            unit="s"
+            min={0.5}
+            max={6}
+            step={0.5}
+            onValueChange={(duration) => onAnimChange({ duration })}
+          />
           <div className="flex items-center justify-between">
             <span className="text-small text-secondary">Loop</span>
             <Switch

@@ -12,6 +12,47 @@ import {
 import { CurveEditor } from "./curve-editor";
 import type { ControlDef, EffectParams, ParamValue } from "./effects/types";
 
+export function LabeledSlider({
+  label,
+  value,
+  unit = "",
+  min,
+  max,
+  step,
+  onValueChange,
+}: {
+  label: string;
+  value: number;
+  unit?: string;
+  min: number;
+  max: number;
+  step: number;
+  onValueChange: (value: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="relative min-w-0 flex-1">
+        <Slider
+          aria-label={label}
+          className="inspector-slider"
+          min={min}
+          max={max}
+          step={step}
+          value={[value]}
+          onValueChange={([nextValue]) => onValueChange(nextValue)}
+        />
+        <span className="pointer-events-none absolute inset-y-0 left-3 z-10 flex items-center text-small font-medium text-secondary">
+          {label}
+        </span>
+      </div>
+      <output className="flex h-9 min-w-16 shrink-0 items-center justify-end rounded-md border border-separator bg-black/5 px-2 text-small text-secondary tabular-nums dark:bg-white/5">
+        {value}
+        {unit}
+      </output>
+    </div>
+  );
+}
+
 function ColorInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <label className="relative inline-flex items-center gap-2 cursor-pointer">
@@ -47,24 +88,15 @@ export function ControlRow({
     case "slider": {
       const value = Number(params[control.id]);
       return (
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <span className="text-small text-secondary">{control.label}</span>
-            <span className="text-small text-secondary tabular-nums">
-              {value}
-              {control.unit ?? ""}
-            </span>
-          </div>
-          <Slider
-            variant="filled"
-            size="small"
-            min={control.min}
-            max={control.max}
-            step={control.step}
-            value={[value]}
-            onValueChange={([v]) => onChange(control.id, v)}
-          />
-        </div>
+        <LabeledSlider
+          label={control.label}
+          value={value}
+          unit={control.unit}
+          min={control.min}
+          max={control.max}
+          step={control.step}
+          onValueChange={(nextValue) => onChange(control.id, nextValue)}
+        />
       );
     }
     case "switch":

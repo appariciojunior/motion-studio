@@ -324,6 +324,7 @@ export class ErrorBoundaryView extends React.Component<ErrorBoundaryViewProps, E
 // Slider — wraps Radix Slider
 // ---------------------------------------------------------------------------
 interface SliderProps {
+  "aria-label"?: string;
   min?: number;
   max?: number;
   step?: number;
@@ -334,7 +335,7 @@ interface SliderProps {
   className?: string;
 }
 
-export function Slider({ min, max, step, value, onValueChange, className }: SliderProps) {
+export function Slider({ "aria-label": ariaLabel, min, max, step, value, onValueChange, className }: SliderProps) {
   return (
     <RadixSlider.Root
       min={min}
@@ -347,7 +348,10 @@ export function Slider({ min, max, step, value, onValueChange, className }: Slid
       <RadixSlider.Track className="bg-black/10 dark:bg-white/10 relative grow rounded-full h-1.5">
         <RadixSlider.Range className="absolute bg-blue-500 rounded-full h-full" />
       </RadixSlider.Track>
-      <RadixSlider.Thumb className="block w-4 h-4 bg-white dark:bg-neutral-200 shadow-md rounded-full border border-black/10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <RadixSlider.Thumb
+        aria-label={ariaLabel}
+        className="block w-4 h-4 bg-white dark:bg-neutral-200 shadow-md rounded-full border border-black/10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
     </RadixSlider.Root>
   );
 }
