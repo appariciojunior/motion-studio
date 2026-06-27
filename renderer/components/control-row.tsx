@@ -37,6 +37,57 @@ const COLOR_PALETTES = [
   ["#fb923c", "#e5e7eb", "#111827", "#fdba74", "#fff7ed"],
 ];
 
+const HARMONY_OFFSETS = [
+  [0, 24, -24, 48, -48],
+  [0, 180, 30, 210, 150],
+  [0, 150, 210, 30, 330],
+  [0, 120, 240, 60, 300],
+  [0, 90, 180, 270, 45],
+];
+
+function randomBetween(min: number, max: number) {
+  return min + Math.random() * (max - min);
+}
+
+function wrapHue(hue: number) {
+  return ((hue % 360) + 360) % 360;
+}
+
+function hslToHex(hue: number, saturation: number, lightness: number) {
+  const s = saturation / 100;
+  const l = lightness / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = l - c / 2;
+  const [r, g, b] =
+    hue < 60 ? [c, x, 0] :
+    hue < 120 ? [x, c, 0] :
+    hue < 180 ? [0, c, x] :
+    hue < 240 ? [0, x, c] :
+    hue < 300 ? [x, 0, c] :
+    [c, 0, x];
+  return [r, g, b]
+    .map((channel) => Math.round((channel + m) * 255).toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase()
+    .padStart(6, "0")
+    .replace(/^/, "#");
+}
+
+function randomHarmonyPalette(count: number) {
+  const baseHue = Math.floor(Math.random() * 360);
+  const offsets = HARMONY_OFFSETS[Math.floor(Math.random() * HARMONY_OFFSETS.length)];
+  const saturation = randomBetween(64, 88);
+  const lightness = randomBetween(48, 66);
+
+  return Array.from({ length: count }, (_, index) => {
+    const hue = wrapHue(baseHue + offsets[index % offsets.length] + randomBetween(-5, 5));
+    const sat = Math.min(92, Math.max(54, saturation + randomBetween(-8, 8)));
+    const light = Math.min(74, Math.max(38, lightness + randomBetween(-8, 8)));
+    return hslToHex(hue, sat, light);
+  });
+}
+
 export function ColorPresetGrid({
   controls,
   params,
@@ -71,7 +122,7 @@ export function ColorPresetGrid({
           iconOnly
           aria-label="Randomize colors"
           title="Randomize colors"
-          onClick={() => applyPalette(previewPalettes[Math.floor(Math.random() * previewPalettes.length)])}
+          onClick={() => applyPalette(randomHarmonyPalette(colorCount))}
         >
           <Shuffle size={14} />
         </Button>
