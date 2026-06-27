@@ -8,7 +8,7 @@ import {
 } from "@glaze/core/components";
 import { RotateCcw, ImageUp, Check } from "lucide-react";
 import { cn } from "@glaze/core/utils";
-import { ControlRow, LabeledSlider } from "./control-row";
+import { ColorPresetGrid, ControlRow, LabeledSlider } from "./control-row";
 import { CurveEditor } from "./curve-editor";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams, ParamValue } from "./effects/types";
@@ -164,6 +164,7 @@ export function TreatmentPanel({
   onAnimChange,
 }: TreatmentPanelProps) {
   const supportsMotion = Boolean(treatment.animate || treatment.animated);
+  let colorPresetsShown = false;
   return (
     <div className="h-full flex flex-col">
       <div className="px-4 py-3 flex items-start justify-between gap-3">
@@ -191,9 +192,21 @@ export function TreatmentPanel({
             <Separator />
           </>
         )}
-        {treatment.controls.map((control) => (
-          <ControlRow key={control.id} control={control} params={params} onChange={onChange} />
-        ))}
+        {treatment.controls.map((control) => {
+          const showColorPresets =
+            !colorPresetsShown &&
+            control.type === "color" &&
+            (!control.visibleWhen || control.visibleWhen(params));
+          if (showColorPresets) colorPresetsShown = true;
+          return (
+            <React.Fragment key={control.id}>
+              {showColorPresets && (
+                <ColorPresetGrid controls={treatment.controls} params={params} onChange={onChange} />
+              )}
+              <ControlRow control={control} params={params} onChange={onChange} />
+            </React.Fragment>
+          );
+        })}
         {supportsMotion && (
           <>
             <Separator />

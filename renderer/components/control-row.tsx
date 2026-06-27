@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  Button,
   Slider,
   Switch,
   SegmentedControl,
@@ -10,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@glaze/core/components";
+import { Shuffle } from "lucide-react";
 import { CurveEditor } from "./curve-editor";
 import type { ControlDef, EffectParams, ParamValue } from "./effects/types";
 
@@ -22,6 +24,77 @@ function snapToStep(value: number, min: number, max: number, step: number) {
   const clamped = Math.min(max, Math.max(min, value));
   const snapped = Math.round((clamped - min) / step) * step + min;
   return Number(snapped.toFixed(decimalsFor(step)));
+}
+
+const COLOR_PALETTES = [
+  ["#ef4444", "#f97316", "#facc15", "#38bdf8", "#f8fafc"],
+  ["#22d3ee", "#ec4899", "#f97316", "#7c3aed", "#111827"],
+  ["#2563eb", "#8b5cf6", "#d946ef", "#fb7185", "#f8fafc"],
+  ["#84cc16", "#22c55e", "#0f766e", "#ecfccb", "#111827"],
+  ["#0f4c81", "#2f8ac4", "#bae6fd", "#e0f2fe", "#0f172a"],
+  ["#ff3b30", "#ff8a5b", "#ffd166", "#4c1d95", "#ffffff"],
+  ["#ffffff", "#a1a1aa", "#3f3f46", "#18181b", "#09090b"],
+  ["#fb923c", "#e5e7eb", "#111827", "#fdba74", "#fff7ed"],
+];
+
+export function ColorPresetGrid({
+  controls,
+  params,
+  onChange,
+}: {
+  controls: ControlDef[];
+  params: EffectParams;
+  onChange: (id: string, value: ParamValue) => void;
+}) {
+  const colorControls = controls.filter(
+    (control) => control.type === "color" && (!control.visibleWhen || control.visibleWhen(params)),
+  );
+
+  if (colorControls.length === 0) return null;
+
+  const currentColors = colorControls.map((control) => String(params[control.id]).toLowerCase());
+  const applyPalette = (palette: string[]) => {
+    colorControls.forEach((control, index) => {
+      onChange(control.id, palette[index % palette.length]);
+    });
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="grid min-w-0 flex-1 grid-cols-4 gap-2">
+        {COLOR_PALETTES.map((palette) => {
+          const selected = currentColors.every(
+            (color, index) => color === palette[index % palette.length].toLowerCase(),
+          );
+          return (
+            <button
+              key={palette.join("-")}
+              type="button"
+              className={`flex h-7 overflow-hidden rounded-md border transition ${
+                selected ? "border-blue-500 ring-2 ring-blue-500/40" : "border-separator"
+              }`}
+              aria-label="Apply color preset"
+              onClick={() => applyPalette(palette)}
+            >
+              {palette.map((color) => (
+                <span key={color} className="flex-1" style={{ background: color }} />
+              ))}
+            </button>
+          );
+        })}
+      </div>
+      <Button
+        variant="default"
+        size="small"
+        iconOnly
+        aria-label="Randomize colors"
+        title="Randomize colors"
+        onClick={() => applyPalette(COLOR_PALETTES[Math.floor(Math.random() * COLOR_PALETTES.length)])}
+      >
+        <Shuffle size={14} />
+      </Button>
+    </div>
+  );
 }
 
 export function LabeledSlider({
