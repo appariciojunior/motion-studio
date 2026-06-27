@@ -1,5 +1,5 @@
 import { Button } from "@glaze/core/components";
-import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCcw, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 
@@ -17,6 +17,8 @@ interface PreviewStageProps {
   onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
+  canReset: boolean;
+  onReset: () => void;
   onReplay: () => void;
   onExport: () => void;
 }
@@ -50,6 +52,8 @@ export function PreviewStage({
   onZoomChange,
   onPrevious,
   onNext,
+  canReset,
+  onReset,
   onReplay,
   onExport,
 }: PreviewStageProps) {
@@ -104,6 +108,12 @@ export function PreviewStage({
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-5 flex items-center justify-center gap-2">
           <div className="pointer-events-auto flex items-center gap-2">
+            {canReset && (
+              <Button variant="glass" size="small" onClick={onReset}>
+                <RefreshCcw size={15} />
+                Reset
+              </Button>
+            )}
             <Button variant="glass" size="small" onClick={onReplay}>
               <RotateCcw size={15} />
               Replay

@@ -7,7 +7,7 @@ import {
   EmptyStateTitle,
   EmptyStateDescription,
 } from "@glaze/core/components";
-import { ChevronLeft, ChevronRight, RotateCcw, Download, Check, ImageUp, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCcw, RotateCcw, Download, Check, ImageUp, Loader2 } from "lucide-react";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams } from "./effects/types";
 import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
@@ -42,6 +42,8 @@ interface TreatmentStageProps {
   onZoomChange: (zoom: number) => void;
   onPrevious: () => void;
   onNext: () => void;
+  canReset: boolean;
+  onReset: () => void;
   onReplay: () => void;
   onDropFile: (file: File) => void;
 }
@@ -79,6 +81,8 @@ export function TreatmentStage({
   onZoomChange,
   onPrevious,
   onNext,
+  canReset,
+  onReset,
   onReplay,
   onDropFile,
 }: TreatmentStageProps) {
@@ -263,6 +267,12 @@ export function TreatmentStage({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-5 flex items-center justify-center gap-2">
           <div className="pointer-events-auto flex items-center gap-2">
+            {canReset && (
+              <Button variant="glass" size="small" onClick={onReset} disabled={!!busy}>
+                <RefreshCcw size={15} />
+                Reset
+              </Button>
+            )}
             {(treatment.animated || anim.enabled) && (
               <Button variant="glass" size="small" onClick={onReplay} disabled={!!busy}>
                 <RotateCcw size={15} />

@@ -58,6 +58,11 @@ export function HomeView() {
   const previousItem = libraryItems[(activeIndex - 1 + libraryItems.length) % libraryItems.length];
   const nextItem = libraryItems[(activeIndex + 1) % libraryItems.length];
   const params = paramsMap[activeId];
+  const activeControls = item.kind === "effect" ? item.effect.controls : item.treatment.controls;
+  const activeDefaults = React.useMemo(() => defaultParams(activeControls), [activeControls]);
+  const canReset = activeControls.some(
+    (control) => JSON.stringify(params[control.id]) !== JSON.stringify(activeDefaults[control.id]),
+  );
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -97,6 +102,14 @@ export function HomeView() {
       ...prev,
       [activeId]: { ...prev[activeId], [id]: value },
     }));
+  };
+
+  const handleReset = () => {
+    setParamsMap((prev) => ({
+      ...prev,
+      [activeId]: activeDefaults,
+    }));
+    setReplayToken((token) => token + 1);
   };
 
   const handlePickSample = (sample: SampleImage) => {
@@ -159,6 +172,8 @@ export function HomeView() {
             onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}
+            canReset={canReset}
+            onReset={handleReset}
             onReplay={() => setReplayToken((t) => t + 1)}
             onExport={() => setExportOpen(true)}
           />
@@ -179,6 +194,8 @@ export function HomeView() {
             onZoomChange={setStageZoom}
             onPrevious={() => handleNavigate(previousItem.id)}
             onNext={() => handleNavigate(nextItem.id)}
+            canReset={canReset}
+            onReset={handleReset}
             onReplay={() => setReplayToken((t) => t + 1)}
             onDropFile={handlePickFile}
           />
