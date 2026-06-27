@@ -62,6 +62,30 @@ export function HomeView() {
     handleSelect(id);
   };
 
+  React.useEffect(() => {
+    if (exportOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (
+        target?.closest(
+          'input, textarea, select, [contenteditable="true"], [role="slider"], [role="spinbutton"]',
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      handleNavigate(event.key === "ArrowLeft" ? previousItem.id : nextItem.id);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [exportOpen, previousItem.id, nextItem.id]);
+
   const handleChange = (id: string, value: ParamValue) => {
     setParamsMap((prev) => ({
       ...prev,
