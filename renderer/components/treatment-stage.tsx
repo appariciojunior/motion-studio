@@ -10,7 +10,6 @@ import {
 import { ChevronLeft, ChevronRight, RotateCcw, Download, Check, ImageUp, Loader2 } from "lucide-react";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams } from "./effects/types";
-import { AppearanceToggle } from "./appearance-toggle";
 import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 import { downloadCanvasPng } from "../lib/image-export";
 import {
@@ -235,9 +234,6 @@ export function TreatmentStage({
               <ChevronRight size={15} />
             </Button>
           </div>
-        </div>
-        <div className="absolute right-3 top-3 z-30">
-          <AppearanceToggle />
         </div>
         {missingSource ? (
           <div className="transition-transform" style={{ transform: `scale(${zoom})` }}>

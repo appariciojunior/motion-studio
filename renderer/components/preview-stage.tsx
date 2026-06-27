@@ -1,7 +1,6 @@
 import { Button } from "@glaze/core/components";
 import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
-import { AppearanceToggle } from "./appearance-toggle";
 import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 
 interface PreviewStageProps {
@@ -88,9 +87,6 @@ export function PreviewStage({
               <ChevronRight size={15} />
             </Button>
           </div>
-        </div>
-        <div className="absolute right-3 top-3 z-30">
-          <AppearanceToggle />
         </div>
         {/* Give the preview a definite, centered width so panel-style effects
             using `w-full max-w-*` (overlays, dialogs, transitions) expand to
