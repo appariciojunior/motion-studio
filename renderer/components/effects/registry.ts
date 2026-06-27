@@ -13,6 +13,7 @@ import { toastEffect } from "./toast";
 import { drawerEffect } from "./drawer";
 import { popoverEffect } from "./popover";
 import { tooltipEffect } from "./tooltip";
+import { commandPaletteEffect } from "./command-palette";
 import { pageTransitionsEffect } from "./page-transitions";
 import { staggerListEffect } from "./stagger-list";
 import { hoverCardEffect } from "./hover-card";
@@ -46,6 +47,7 @@ import { accordionEffect } from "./accordion";
 import { colorPickerEffect } from "./color-picker";
 import { charactersRemainingEffect } from "./characters-remaining";
 import { iosSliderEffect } from "./ios-slider";
+import { iosAppFolderEffect } from "./ios-app-folder";
 import { exposureCarouselEffect } from "./exposure-carousel";
 import { ossHeroEffect } from "./oss-hero";
 import { warpOverlayEffect } from "./warp-overlay";
@@ -65,6 +67,14 @@ import { reorderListEffect } from "./reorder-list";
 import { copyButtonEffect } from "./copy-button";
 import { rippleButtonEffect } from "./ripple-button";
 import { liquidButtonEffect } from "./liquid-button";
+import { radialMenuEffect } from "./radial-menu";
+import { holdToConfirmEffect } from "./hold-to-confirm";
+import { swipeActionsEffect } from "./swipe-actions";
+import { notificationStackEffect } from "./notification-stack";
+import { imageRevealSliderEffect } from "./image-reveal-slider";
+import { scrollRevealEffect } from "./scroll-reveal";
+import { floatingActionButtonEffect } from "./floating-action-button";
+import { pathDrawingEffect } from "./path-drawing";
 
 export const effects: Effect[] = [
   // Text effects
@@ -105,6 +115,7 @@ export const effects: Effect[] = [
   drawerEffect,
   popoverEffect,
   tooltipEffect,
+  commandPaletteEffect,
   familyDialogEffect,
   modalSharedLayoutEffect,
   accordionEffect,
@@ -132,16 +143,26 @@ export const effects: Effect[] = [
   copyButtonEffect,
   rippleButtonEffect,
   liquidButtonEffect,
+  radialMenuEffect,
+  holdToConfirmEffect,
+  swipeActionsEffect,
+  floatingActionButtonEffect,
+  imageRevealSliderEffect,
+  // Transitions & lists (continued)
+  scrollRevealEffect,
+  notificationStackEffect,
   // Forms & inputs
   colorPickerEffect,
   charactersRemainingEffect,
   iosSliderEffect,
+  iosAppFolderEffect,
   exposureCarouselEffect,
   // Heroes
   ossHeroEffect,
   // Experimental
   warpOverlayEffect,
   appleWatchEffect,
+  pathDrawingEffect,
 ];
 
 export function getEffect(id: string): Effect | undefined {
