@@ -73,7 +73,7 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
               key={r.id}
               initial={{ width: 0, height: 0, opacity }}
               animate={{ width: 400, height: 400, opacity: 0 }}
-              transition={{ duration, ease: "easeOut" }}
+              transition={{ duration, ease: [0.23, 1, 0.32, 1] }}
               style={{
                 position: "absolute",
                 left: r.x,
@@ -146,7 +146,7 @@ export function RippleButton({ children }: { children: React.ReactNode }) {
             key={r.id}
             initial={{ width: 0, height: 0, opacity: ${n(Number(p.opacity) / 100)} }}
             animate={{ width: 400, height: 400, opacity: 0 }}
-            transition={{ duration: ${n(p.duration)}, ease: "easeOut" }}
+            transition={{ duration: ${n(p.duration)}, ease: [0.23, 1, 0.32, 1] }}
             style={{
               position: "absolute",
               left: r.x,

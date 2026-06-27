@@ -41,7 +41,7 @@ function Preview({ params, replayToken }: { params: EffectParams; replayToken: n
           initial={{ opacity: 0, filter: "blur(12px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0, filter: "blur(12px)" }}
-          transition={{ duration, ease: "easeInOut" }}
+          transition={{ duration, ease: [0.77, 0, 0.175, 1] }}
           style={{
             fontSize: Number(params.fontSize),
             fontWeight: 800,
@@ -87,7 +87,7 @@ export function MorphingText({ words }: { words: string[] }) {
           initial={{ opacity: 0, filter: "blur(12px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0, filter: "blur(12px)" }}
-          transition={{ duration: ${n(p.duration)}, ease: "easeInOut" }}
+          transition={{ duration: ${n(p.duration)}, ease: [0.77, 0, 0.175, 1] }}
           style={{ fontSize: ${n(p.fontSize)}, fontWeight: 800, color: "${p.color}", position: "absolute" }}
         >
           {words[index]}
