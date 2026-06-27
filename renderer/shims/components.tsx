@@ -150,14 +150,14 @@ export function SidebarListGroup({ title, children, className, collapsed = false
     <div className={cn("mt-4 mb-1 first:mt-0", className)}>
       <button
         type="button"
-        className="group flex w-full items-center gap-1.5 px-3 py-1.5 text-left text-xs font-semibold uppercase tracking-wider text-black/55 transition-colors hover:text-foreground dark:text-white/40"
+        className="group flex w-full items-center gap-1.5 py-1.5 pl-3 pr-6 text-left text-xs font-semibold uppercase tracking-wider text-black/55 transition-colors hover:text-foreground dark:text-white/40"
         aria-expanded={!collapsed}
         onClick={onToggle}
       >
         <span className="min-w-0 flex-1 truncate">{title}</span>
         <span
           className={cn(
-            "text-[10px] leading-none transition-transform text-black/45 dark:text-white/35",
+            "flex size-4 shrink-0 items-center justify-center rounded-full text-sm leading-none text-black/60 transition-transform group-hover:bg-black/7 group-hover:text-foreground dark:text-white/50 dark:group-hover:bg-white/7",
             collapsed ? "rotate-90" : "rotate-0",
           )}
           aria-hidden
