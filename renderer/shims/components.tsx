@@ -63,7 +63,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({ variant = "default", size = "medium", iconOnly = false, className, children, ...props }: ButtonProps) {
   const variantClasses = {
     glass:
-      "bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 border border-white/20 text-foreground backdrop-blur-sm",
+      "bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 border border-black/[0.12] dark:border-white/20 text-foreground backdrop-blur-sm",
     accent: "bg-blue-500 hover:bg-blue-600 text-white border-transparent",
     muted:
       "bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 text-foreground",
@@ -120,7 +120,7 @@ export function Sidebar({ children, className }: { children?: React.ReactNode; c
   return (
     <div
       className={cn(
-        "h-full flex flex-col overflow-hidden bg-black/3 dark:bg-white/3 border-r border-black/8 dark:border-white/8",
+        "h-full flex flex-col overflow-hidden bg-black/[0.045] dark:bg-white/3 border-r border-black/[0.12] dark:border-white/8",
         className,
       )}
     >
@@ -146,7 +146,7 @@ interface SidebarListGroupProps {
 export function SidebarListGroup({ title, children, className }: SidebarListGroupProps) {
   return (
     <div className={cn("mt-4 mb-1 first:mt-0", className)}>
-      <div className="px-3 py-1.5 text-xs font-semibold text-black/40 dark:text-white/40 uppercase tracking-wider">
+      <div className="px-3 py-1.5 text-xs font-semibold text-black/55 dark:text-white/40 uppercase tracking-wider">
         {title}
       </div>
       <div>{children}</div>
@@ -169,8 +169,8 @@ export function SidebarListItem({ title, icon, selected, onClick, className }: S
       className={cn(
         "w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left cursor-default transition-colors rounded-md mx-1",
         selected
-          ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 font-medium"
-          : "text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground",
+          ? "bg-blue-500/14 text-blue-700 dark:text-blue-400 font-medium"
+          : "text-black/[0.78] dark:text-white/70 hover:bg-black/[0.07] dark:hover:bg-white/5 hover:text-foreground",
         className,
       )}
     >
@@ -221,7 +221,7 @@ export function SplitView({
       {inspector && (
         <div
           style={{ width: inspectorSize.default, minWidth: inspectorSize.min, maxWidth: inspectorSize.max }}
-          className="shrink-0 h-full overflow-hidden border-l border-black/8 dark:border-white/8"
+          className="shrink-0 h-full overflow-hidden border-l border-black/[0.12] dark:border-white/8"
         >
           {inspector}
         </div>
@@ -244,7 +244,7 @@ export function Toolbar({ position = "top", children, className }: ToolbarProps)
     <div
       data-toolbar
       className={cn(
-        "flex flex-col shrink-0 border-black/8 dark:border-white/8 bg-black/2 dark:bg-white/2",
+        "flex flex-col shrink-0 border-black/[0.12] dark:border-white/8 bg-black/[0.035] dark:bg-white/2",
         position === "top" ? "border-b" : "border-t",
         className,
       )}
@@ -556,7 +556,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   return (
     <DialogContext.Provider value={{ onClose }}>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+        <div className="absolute inset-0 bg-black/[0.38] dark:bg-black/50 backdrop-blur-sm" onClick={onClose} />
         <div className="relative z-10">{children}</div>
       </div>
     </DialogContext.Provider>
@@ -567,7 +567,7 @@ export function DialogContent({ children, className }: { children?: React.ReactN
   return (
     <div
       className={cn(
-        "bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-black/10 dark:border-white/10",
+        "bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-black/[0.14] dark:border-white/10",
         "w-[90vw] max-w-lg max-h-[85vh] flex flex-col overflow-hidden",
         className,
       )}
@@ -579,7 +579,7 @@ export function DialogContent({ children, className }: { children?: React.ReactN
 
 export function DialogHeader({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex items-center px-5 py-4 border-b border-black/8 dark:border-white/8 shrink-0", className)}>
+    <div className={cn("flex items-center px-5 py-4 border-b border-black/[0.12] dark:border-white/8 shrink-0", className)}>
       {children}
     </div>
   );
@@ -595,7 +595,7 @@ export function DialogBody({ children, className }: { children?: React.ReactNode
 
 export function DialogFooter({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex items-center justify-end gap-2 px-5 py-3 border-t border-black/8 dark:border-white/8 shrink-0", className)}>
+    <div className={cn("flex items-center justify-end gap-2 px-5 py-3 border-t border-black/[0.12] dark:border-white/8 shrink-0", className)}>
       {children}
     </div>
   );

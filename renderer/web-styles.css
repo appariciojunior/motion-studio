@@ -1,6 +1,8 @@
 /* Web build: explicitly import Tailwind (Glaze normally injects this) */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Source Tailwind from all renderer files */
 @source "./main/**/*.{ts,tsx}";
 @source "./settings/**/*.{ts,tsx}";
@@ -19,12 +21,16 @@
 
   /* Separator */
   --color-separator: rgba(0, 0, 0, 0.12);
+  --color-control: rgba(0, 0, 0, 0.055);
+  --color-elevated: rgba(0, 0, 0, 0.08);
 }
 
 .dark {
   --color-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.145 0 0);
   --color-separator: rgba(255, 255, 255, 0.12);
+  --color-control: rgba(255, 255, 255, 0.055);
+  --color-elevated: rgba(255, 255, 255, 0.085);
 }
 
 html,
@@ -50,7 +56,7 @@ body {
 }
 
 .text-secondary {
-  color: color-mix(in oklch, var(--color-foreground) 55%, transparent);
+  color: color-mix(in oklch, var(--color-foreground) 68%, transparent);
 }
 
 .text-small {
@@ -76,6 +82,14 @@ body {
 /* border-separator utility */
 .border-separator {
   border-color: var(--color-separator);
+}
+
+.bg-control {
+  background-color: var(--color-control);
+}
+
+.bg-elevated {
+  background-color: var(--color-elevated);
 }
 
 /* Drag region (no-op in browser) */
@@ -168,7 +182,7 @@ button {
 /* Subtle dotted backdrop for the live preview stage */
 .motion-stage {
   background-image: radial-gradient(
-    var(--color-separator) 1px,
+    color-mix(in oklch, var(--color-foreground) 14%, transparent) 1px,
     transparent 1px
   );
   background-size: 16px 16px;
