@@ -92,7 +92,7 @@ body {
   background-color: var(--color-elevated);
 }
 
-/* Drag region overlay: click-through so top controls stay interactive */
+/* Drag region — click-through overlay */
 .drag-region {
   -webkit-app-region: drag;
   app-region: drag;

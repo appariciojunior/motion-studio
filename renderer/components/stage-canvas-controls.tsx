@@ -17,19 +17,17 @@ function canvasControlToneClasses(canvasTone: StageCanvasTone) {
   if (canvasTone === "light") {
     return {
       pill: "border-black/12 bg-white/90",
-      divider: "bg-black/12 dark:bg-black/12",
-      button:
-        "rounded-full bg-black/5 hover:bg-black/10 border-black/10 text-neutral-900 dark:bg-black/5 dark:hover:bg-black/10 dark:border-black/10 dark:text-neutral-900",
-      zoom: "text-neutral-600 hover:text-neutral-900 dark:text-neutral-600 dark:hover:text-neutral-900",
+      divider: "bg-black/12",
+      button: "rounded-full bg-black/5 hover:bg-black/10 border-black/10 text-neutral-900",
+      zoom: "text-neutral-600 hover:text-neutral-900",
     };
   }
   if (canvasTone === "dark") {
     return {
       pill: "border-white/20 bg-neutral-950/90",
-      divider: "bg-white/12 dark:bg-white/12",
-      button:
-        "rounded-full bg-white/5 hover:bg-white/10 border-white/10 text-white dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 dark:text-white",
-      zoom: "text-neutral-400 hover:text-white dark:text-neutral-400 dark:hover:text-white",
+      divider: "bg-white/12",
+      button: "rounded-full bg-white/5 hover:bg-white/10 border-white/10 text-white",
+      zoom: "text-neutral-400 hover:text-white",
     };
   }
   return {
