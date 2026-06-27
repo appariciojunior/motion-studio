@@ -3,7 +3,7 @@ import { SplitView } from "@glaze/core/components";
 import { effects } from "../components/effects/registry";
 import { treatments } from "../components/treatments/registry";
 import { defaultParams, type EffectParams, type ParamValue } from "../components/effects/types";
-import { resolveItem, defaultItemId } from "../lib/library";
+import { resolveItem, defaultItemId, libraryGroups } from "../lib/library";
 import { EffectSidebar } from "../components/effect-sidebar";
 import { ControlPanel } from "../components/control-panel";
 import { PreviewStage } from "../components/preview-stage";
@@ -47,12 +47,20 @@ export function HomeView() {
 
   const item = resolveItem(selectedId) ?? { kind: "effect" as const, effect: effects[0] };
   const activeId = item.kind === "effect" ? item.effect.id : item.treatment.id;
+  const libraryItems = React.useMemo(() => libraryGroups().flatMap((group) => group.items), []);
+  const activeIndex = libraryItems.findIndex((entry) => entry.id === activeId);
+  const previousItem = libraryItems[(activeIndex - 1 + libraryItems.length) % libraryItems.length];
+  const nextItem = libraryItems[(activeIndex + 1) % libraryItems.length];
   const controls = item.kind === "effect" ? item.effect.controls : item.treatment.controls;
   const params = paramsMap[activeId];
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
     setReplayToken(0);
+  };
+
+  const handleNavigate = (id: string) => {
+    handleSelect(id);
   };
 
   const handleChange = (id: string, value: ParamValue) => {
@@ -119,6 +127,10 @@ export function HomeView() {
             effect={item.effect}
             params={params}
             replayToken={replayToken}
+            previousLabel={previousItem.name}
+            nextLabel={nextItem.name}
+            onPrevious={() => handleNavigate(previousItem.id)}
+            onNext={() => handleNavigate(nextItem.id)}
             onReplay={() => setReplayToken((t) => t + 1)}
             onExport={() => setExportOpen(true)}
           />
@@ -129,6 +141,10 @@ export function HomeView() {
             source={source}
             anim={anim}
             replayToken={replayToken}
+            previousLabel={previousItem.name}
+            nextLabel={nextItem.name}
+            onPrevious={() => handleNavigate(previousItem.id)}
+            onNext={() => handleNavigate(nextItem.id)}
             onReplay={() => setReplayToken((t) => t + 1)}
             onDropFile={handlePickFile}
           />

@@ -1,5 +1,5 @@
 import { Toolbar, ToolbarRow, ToolbarTitle, ToolbarActions, Button } from "@glaze/core/components";
-import { RotateCcw, Share } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw, Share } from "lucide-react";
 import type { Effect, EffectParams } from "./effects/types";
 import { AppearanceToggle } from "./appearance-toggle";
 
@@ -7,6 +7,10 @@ interface PreviewStageProps {
   effect: Effect;
   params: EffectParams;
   replayToken: number;
+  previousLabel: string;
+  nextLabel: string;
+  onPrevious: () => void;
+  onNext: () => void;
   onReplay: () => void;
   onExport: () => void;
 }
@@ -26,14 +30,46 @@ function timingSignature(effect: Effect, params: EffectParams): string {
     .join("&");
 }
 
-export function PreviewStage({ effect, params, replayToken, onReplay, onExport }: PreviewStageProps) {
+export function PreviewStage({
+  effect,
+  params,
+  replayToken,
+  previousLabel,
+  nextLabel,
+  onPrevious,
+  onNext,
+  onReplay,
+  onExport,
+}: PreviewStageProps) {
   const Preview = effect.Preview;
   return (
     <div className="h-full flex flex-col">
       <Toolbar position="top">
-        <ToolbarRow>
-          <ToolbarTitle>{effect.name}</ToolbarTitle>
-          <ToolbarActions>
+        <ToolbarRow className="relative justify-center">
+          <div className="flex min-w-0 items-center justify-center gap-1">
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              aria-label={`Previous effect: ${previousLabel}`}
+              title={previousLabel}
+              onClick={onPrevious}
+            >
+              <ChevronLeft size={15} />
+            </Button>
+            <ToolbarTitle className="flex-none max-w-64 text-center">{effect.name}</ToolbarTitle>
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              aria-label={`Next effect: ${nextLabel}`}
+              title={nextLabel}
+              onClick={onNext}
+            >
+              <ChevronRight size={15} />
+            </Button>
+          </div>
+          <ToolbarActions className="absolute right-2 ml-0">
             <AppearanceToggle />
           </ToolbarActions>
         </ToolbarRow>
