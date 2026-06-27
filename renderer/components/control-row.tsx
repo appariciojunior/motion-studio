@@ -53,6 +53,8 @@ export function ColorPresetGrid({
   if (colorControls.length === 0) return null;
 
   const currentColors = colorControls.map((control) => String(params[control.id]).toLowerCase());
+  const colorCount = colorControls.length;
+  const previewPalettes = COLOR_PALETTES.map((palette) => palette.slice(0, colorCount));
   const applyPalette = (palette: string[]) => {
     colorControls.forEach((control, index) => {
       onChange(control.id, palette[index % palette.length]);
@@ -60,9 +62,22 @@ export function ColorPresetGrid({
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="grid min-w-0 flex-1 grid-cols-4 gap-2">
-        {COLOR_PALETTES.map((palette) => {
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-small text-secondary">Presets</span>
+        <Button
+          variant="default"
+          size="small"
+          iconOnly
+          aria-label="Randomize colors"
+          title="Randomize colors"
+          onClick={() => applyPalette(previewPalettes[Math.floor(Math.random() * previewPalettes.length)])}
+        >
+          <Shuffle size={14} />
+        </Button>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        {previewPalettes.map((palette) => {
           const selected = currentColors.every(
             (color, index) => color === palette[index % palette.length].toLowerCase(),
           );
@@ -83,16 +98,6 @@ export function ColorPresetGrid({
           );
         })}
       </div>
-      <Button
-        variant="default"
-        size="small"
-        iconOnly
-        aria-label="Randomize colors"
-        title="Randomize colors"
-        onClick={() => applyPalette(COLOR_PALETTES[Math.floor(Math.random() * COLOR_PALETTES.length)])}
-      >
-        <Shuffle size={14} />
-      </Button>
     </div>
   );
 }
