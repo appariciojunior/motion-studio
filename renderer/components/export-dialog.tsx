@@ -89,7 +89,7 @@ export function ExportDialog({ effect, params, open, onOpenChange }: ExportDialo
           </pre>
         </DialogBody>
         <DialogFooter>
-          <Button variant="secondary" onClick={handleDownload}>
+          <Button variant="default" onClick={handleDownload}>
             <Download size={15} />
             Download .{FORMAT_META[format].ext}
           </Button>
