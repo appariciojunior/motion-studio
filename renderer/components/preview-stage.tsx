@@ -84,7 +84,7 @@ export function PreviewStage({
             </Button>
           </div>
         </div>
-        <div className="absolute right-3 top-3 z-20">
+        <div className="absolute right-3 top-3 z-30">
           <AppearanceToggle />
         </div>
         {/* Give the preview a definite, centered width so panel-style effects

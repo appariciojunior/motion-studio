@@ -231,7 +231,7 @@ export function TreatmentStage({
             </Button>
           </div>
         </div>
-        <div className="absolute right-3 top-3 z-20">
+        <div className="absolute right-3 top-3 z-30">
           <AppearanceToggle />
         </div>
         {missingSource ? (
