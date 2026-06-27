@@ -233,16 +233,20 @@ export function SplitView({
   });
   const sidebarMin = sidebarSize.min ?? 160;
   const sidebarMax = sidebarSize.max ?? 350;
+  const setPersistedSidebarWidth = (width: number) => {
+    setSidebarWidth(width);
+    if (sidebarStorageKey) window.localStorage.setItem(sidebarStorageKey, String(Math.round(width)));
+  };
 
   const startSidebarResize = (event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
+    if (event.detail > 1) return;
     const startX = event.clientX;
     const startWidth = sidebarWidth;
 
     const onMove = (moveEvent: PointerEvent) => {
       const nextWidth = Math.min(sidebarMax, Math.max(sidebarMin, startWidth + moveEvent.clientX - startX));
-      setSidebarWidth(nextWidth);
-      if (sidebarStorageKey) window.localStorage.setItem(sidebarStorageKey, String(Math.round(nextWidth)));
+      setPersistedSidebarWidth(nextWidth);
     };
 
     const onUp = () => {
@@ -253,6 +257,7 @@ export function SplitView({
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
   };
+  const resetSidebarWidth = () => setPersistedSidebarWidth(sidebarSize.default);
 
   return (
     <div className={cn("flex h-full overflow-hidden", className)}>
@@ -267,6 +272,7 @@ export function SplitView({
             aria-orientation="vertical"
             aria-label="Resize sidebar"
             className="absolute inset-y-0 right-0 z-20 w-1 cursor-col-resize bg-transparent hover:bg-blue-500/40"
+            onDoubleClick={resetSidebarWidth}
             onPointerDown={startSidebarResize}
           />
         </div>
