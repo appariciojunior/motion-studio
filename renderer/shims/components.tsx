@@ -158,16 +158,15 @@ export function SidebarList({ children, className }: { children?: React.ReactNod
 
   return (
     <div className={cn("relative flex-1 min-h-0", className)}>
-      <div ref={scrollRef} className="sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2">
+      <div
+        ref={scrollRef}
+        className={cn(
+          "sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2",
+          showBottomFade && "sidebar-scroll-fade-bottom",
+        )}
+      >
         {children}
       </div>
-      <div
-        aria-hidden
-        className={cn(
-          "pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-black/[0.045] to-transparent transition-opacity duration-150 dark:from-white/3",
-          showBottomFade ? "opacity-100" : "opacity-0",
-        )}
-      />
     </div>
   );
 }
