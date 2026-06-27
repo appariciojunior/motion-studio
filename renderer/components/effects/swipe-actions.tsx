@@ -50,18 +50,18 @@ function SwipeItem({
     autoDoneRef.current = true;
     const run = async () => {
       await new Promise<void>((res) => setTimeout(res, 400));
-      await animate(x, -ACTION_WIDTH, { duration, ease: "easeOut" });
+      await animate(x, -ACTION_WIDTH, { duration, ease: [0.77, 0, 0.175, 1]});
       await new Promise<void>((res) => setTimeout(res, 700));
-      await animate(x, 0, { duration, ease: "easeOut" });
+      await animate(x, 0, { duration, ease: [0.77, 0, 0.175, 1]});
     };
     run();
   }, [autoDemo, duration, x]);
 
   function handleDragEnd(_: unknown, info: { offset: { x: number } }) {
     if (info.offset.x < -threshold) {
-      animate(x, -ACTION_WIDTH, { duration, ease: "easeOut" });
+      animate(x, -ACTION_WIDTH, { duration, ease: [0.77, 0, 0.175, 1]});
     } else {
-      animate(x, 0, { duration, ease: "easeOut" });
+      animate(x, 0, { duration, ease: [0.77, 0, 0.175, 1]});
     }
   }
 
@@ -74,7 +74,7 @@ function SwipeItem({
   }
 
   function handleArchive() {
-    animate(x, 0, { duration, ease: "easeOut" });
+    animate(x, 0, { duration, ease: [0.77, 0, 0.175, 1]});
   }
 
   return (
