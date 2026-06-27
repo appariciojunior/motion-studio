@@ -239,6 +239,40 @@ export function ControlRow({
         </div>
       );
     case "select":
+      if (control.options.length <= 4) {
+        const value = String(params[control.id]);
+        const gridClass =
+          control.options.length === 4
+            ? "grid-cols-2"
+            : control.options.length === 3
+              ? "grid-cols-3"
+              : "grid-cols-2";
+        return (
+          <div className="flex flex-col gap-1.5">
+            <span className="text-small text-secondary">{control.label}</span>
+            <div className={`grid gap-2 ${gridClass}`}>
+              {control.options.map((opt) => {
+                const selected = opt.value === value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    aria-pressed={selected}
+                    className={`h-9 rounded-md border px-3 text-small font-medium transition-colors ${
+                      selected
+                        ? "border-blue-500 bg-blue-500/14 text-blue-700 dark:text-blue-300"
+                        : "border-separator bg-black/5 text-secondary hover:bg-black/8 dark:bg-white/5 dark:hover:bg-white/8"
+                    }`}
+                    onClick={() => onChange(control.id, opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
       return (
         <div className="flex flex-col gap-1.5">
           <span className="text-small text-secondary">{control.label}</span>
