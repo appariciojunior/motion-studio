@@ -84,6 +84,25 @@ body {
   app-region: drag;
 }
 
+.sidebar-scroll {
+  scrollbar-color: color-mix(in oklch, var(--color-foreground) 32%, transparent) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-foreground) 32%, transparent);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
 /* Button press feedback — scale-down on active, matching Emil's 0.97 rule */
 button:active:not(:disabled) {
   transform: scale(0.97);
