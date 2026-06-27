@@ -154,16 +154,16 @@ export function SidebarListGroup({ title, children, className, collapsed = false
         aria-expanded={!collapsed}
         onClick={onToggle}
       >
+        <span className="min-w-0 flex-1 truncate">{title}</span>
         <span
           className={cn(
             "text-[10px] leading-none transition-transform text-black/45 dark:text-white/35",
-            collapsed ? "-rotate-90" : "rotate-0",
+            collapsed ? "rotate-90" : "rotate-0",
           )}
           aria-hidden
         >
           ▾
         </span>
-        {title}
       </button>
       {!collapsed && <div>{children}</div>}
     </div>
