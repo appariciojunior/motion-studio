@@ -141,15 +141,31 @@ interface SidebarListGroupProps {
   title: string;
   children?: React.ReactNode;
   className?: string;
+  collapsed?: boolean;
+  onToggle?: () => void;
 }
 
-export function SidebarListGroup({ title, children, className }: SidebarListGroupProps) {
+export function SidebarListGroup({ title, children, className, collapsed = false, onToggle }: SidebarListGroupProps) {
   return (
     <div className={cn("mt-4 mb-1 first:mt-0", className)}>
-      <div className="px-3 py-1.5 text-xs font-semibold text-black/55 dark:text-white/40 uppercase tracking-wider">
+      <button
+        type="button"
+        className="group flex w-full items-center gap-1.5 px-3 py-1.5 text-left text-xs font-semibold uppercase tracking-wider text-black/55 transition-colors hover:text-foreground dark:text-white/40"
+        aria-expanded={!collapsed}
+        onClick={onToggle}
+      >
+        <span
+          className={cn(
+            "text-[10px] leading-none transition-transform text-black/45 dark:text-white/35",
+            collapsed ? "-rotate-90" : "rotate-0",
+          )}
+          aria-hidden
+        >
+          ▾
+        </span>
         {title}
-      </div>
-      <div>{children}</div>
+      </button>
+      {!collapsed && <div>{children}</div>}
     </div>
   );
 }
