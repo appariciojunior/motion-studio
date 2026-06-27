@@ -14,7 +14,7 @@ export function ControlPanel({ effect, params, onChange }: ControlPanelProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 py-3 flex items-start justify-between gap-3">
+      <div className="titlebar-drag px-4 py-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-strong">{effect.name}</h2>
           <p className="text-small text-secondary mt-0.5">{effect.description}</p>

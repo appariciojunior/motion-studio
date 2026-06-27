@@ -92,10 +92,22 @@ body {
   background-color: var(--color-elevated);
 }
 
-/* Drag region (no-op in browser) */
+/* Drag region overlay: click-through so top controls stay interactive */
 .drag-region {
   -webkit-app-region: drag;
   app-region: drag;
+  pointer-events: none;
+}
+
+/* Electron frameless drag on real chrome; interactive children opt out */
+.titlebar-drag {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.titlebar-drag :is(button, a, input, textarea, select, label, [role="slider"], [role="switch"], [role="button"], .pointer-events-auto) {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .sidebar-scroll {

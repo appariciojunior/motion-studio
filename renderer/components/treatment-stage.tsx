@@ -200,7 +200,7 @@ export function TreatmentStage({
   return (
     <div className="h-full flex flex-col">
       <div
-        className="motion-stage relative flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
+        className="titlebar-drag motion-stage relative flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
         data-bg-mode={backgroundMode}
         data-canvas-tone={canvasTone}
         onDragOver={(e) => {

@@ -28,7 +28,7 @@ export function EffectSidebar({ selectedId, onSelect }: EffectSidebarProps) {
 
   return (
     <Sidebar>
-      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-black/[0.08] px-3 dark:border-white/8">
+      <div className="titlebar-drag flex h-10 shrink-0 items-center gap-2 border-b border-black/[0.08] px-3 dark:border-white/8">
         <img src="/favicon.png" alt="" className="size-5 rounded-md" />
         <span className="min-w-0 flex-1 truncate text-sm font-semibold tracking-tight text-foreground">Motion Studio</span>
         <AppearanceToggle />
