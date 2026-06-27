@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Slider,
   Switch,
@@ -11,6 +12,17 @@ import {
 } from "@glaze/core/components";
 import { CurveEditor } from "./curve-editor";
 import type { ControlDef, EffectParams, ParamValue } from "./effects/types";
+
+function decimalsFor(step: number) {
+  const [, decimals = ""] = String(step).split(".");
+  return decimals.length;
+}
+
+function snapToStep(value: number, min: number, max: number, step: number) {
+  const clamped = Math.min(max, Math.max(min, value));
+  const snapped = Math.round((clamped - min) / step) * step + min;
+  return Number(snapped.toFixed(decimalsFor(step)));
+}
 
 export function LabeledSlider({
   label,
@@ -29,6 +41,23 @@ export function LabeledSlider({
   step: number;
   onValueChange: (value: number) => void;
 }) {
+  const [draft, setDraft] = React.useState(String(value));
+
+  React.useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const commitDraft = () => {
+    const parsed = Number(draft);
+    if (!Number.isFinite(parsed)) {
+      setDraft(String(value));
+      return;
+    }
+    const nextValue = snapToStep(parsed, min, max, step);
+    setDraft(String(nextValue));
+    onValueChange(nextValue);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div className="relative min-w-0 flex-1">
@@ -45,10 +74,27 @@ export function LabeledSlider({
           {label}
         </span>
       </div>
-      <output className="flex h-9 min-w-16 shrink-0 items-center justify-end rounded-md border border-separator bg-black/5 px-2 text-small text-secondary tabular-nums dark:bg-white/5">
-        {value}
-        {unit}
-      </output>
+      <label className="flex h-9 min-w-16 shrink-0 items-center justify-end gap-0.5 rounded-md border border-separator bg-black/5 px-2 text-small text-secondary tabular-nums focus-within:ring-2 focus-within:ring-blue-500 dark:bg-white/5">
+        <input
+          type="number"
+          value={draft}
+          min={min}
+          max={max}
+          step={step}
+          aria-label={`${label} value`}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={commitDraft}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur();
+            if (event.key === "Escape") {
+              setDraft(String(value));
+              event.currentTarget.blur();
+            }
+          }}
+          className="w-10 bg-transparent text-right text-inherit outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        />
+        {unit && <span className="shrink-0">{unit}</span>}
+      </label>
     </div>
   );
 }
