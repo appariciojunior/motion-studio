@@ -3,13 +3,14 @@ import { SplitView } from "@glaze/core/components";
 import { effects } from "../components/effects/registry";
 import { treatments } from "../components/treatments/registry";
 import { defaultParams, type EffectParams, type ParamValue } from "../components/effects/types";
-import { resolveItem, defaultItemId } from "../lib/library";
+import { resolveItem, defaultItemId, libraryGroups } from "../lib/library";
 import { EffectSidebar } from "../components/effect-sidebar";
 import { ControlPanel } from "../components/control-panel";
 import { PreviewStage } from "../components/preview-stage";
 import { ExportDialog } from "../components/export-dialog";
 import { TreatmentPanel } from "../components/treatment-panel";
 import { TreatmentStage } from "../components/treatment-stage";
+import type { StageBackgroundMode, StageCanvasTone } from "../components/stage-canvas-controls";
 import { SAMPLE_IMAGES, loadSample, loadFile, type SampleImage } from "../lib/source-image";
 import { defaultAnimation, type AnimationSettings } from "../lib/anim";
 
@@ -25,6 +26,9 @@ export function HomeView() {
   const [paramsMap, setParamsMap] = React.useState<Record<string, EffectParams>>(buildInitialParams);
   const [replayToken, setReplayToken] = React.useState(0);
   const [exportOpen, setExportOpen] = React.useState(false);
+  const [stageBackgroundMode, setStageBackgroundMode] = React.useState<StageBackgroundMode>("dots");
+  const [stageCanvasTone, setStageCanvasTone] = React.useState<StageCanvasTone>("system");
+  const [stageZoom, setStageZoom] = React.useState(1);
 
   // Shared source image for the treatment lab.
   const [sourceId, setSourceId] = React.useState(SAMPLE_IMAGES[0].id);
@@ -32,8 +36,10 @@ export function HomeView() {
 
   // Shared easing-driven animation settings for image treatments.
   const [anim, setAnim] = React.useState<AnimationSettings>(defaultAnimation);
-  const handleAnimChange = (patch: Partial<AnimationSettings>) =>
+  const handleAnimChange = (patch: Partial<AnimationSettings>) => {
     setAnim((prev) => ({ ...prev, ...patch }));
+    setReplayToken((token) => token + 1);
+  };
 
   React.useEffect(() => {
     let alive = true;
@@ -47,13 +53,49 @@ export function HomeView() {
 
   const item = resolveItem(selectedId) ?? { kind: "effect" as const, effect: effects[0] };
   const activeId = item.kind === "effect" ? item.effect.id : item.treatment.id;
-  const controls = item.kind === "effect" ? item.effect.controls : item.treatment.controls;
+  const libraryItems = React.useMemo(() => libraryGroups().flatMap((group) => group.items), []);
+  const activeIndex = libraryItems.findIndex((entry) => entry.id === activeId);
+  const previousItem = libraryItems[(activeIndex - 1 + libraryItems.length) % libraryItems.length];
+  const nextItem = libraryItems[(activeIndex + 1) % libraryItems.length];
   const params = paramsMap[activeId];
+  const activeControls = item.kind === "effect" ? item.effect.controls : item.treatment.controls;
+  const activeDefaults = React.useMemo(() => defaultParams(activeControls), [activeControls]);
+  const canReset = activeControls.some(
+    (control) => JSON.stringify(params[control.id]) !== JSON.stringify(activeDefaults[control.id]),
+  );
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
     setReplayToken(0);
   };
+
+  const handleNavigate = (id: string) => {
+    handleSelect(id);
+  };
+
+  React.useEffect(() => {
+    if (exportOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (
+        target?.closest(
+          'input, textarea, select, [contenteditable="true"], [role="slider"], [role="spinbutton"]',
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      handleNavigate(event.key === "ArrowLeft" ? previousItem.id : nextItem.id);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [exportOpen, previousItem.id, nextItem.id]);
 
   const handleChange = (id: string, value: ParamValue) => {
     setParamsMap((prev) => ({
@@ -63,7 +105,11 @@ export function HomeView() {
   };
 
   const handleReset = () => {
-    setParamsMap((prev) => ({ ...prev, [activeId]: defaultParams(controls) }));
+    setParamsMap((prev) => ({
+      ...prev,
+      [activeId]: activeDefaults,
+    }));
+    setReplayToken((token) => token + 1);
   };
 
   const handlePickSample = (sample: SampleImage) => {
@@ -88,21 +134,19 @@ export function HomeView() {
         storageKey="motion-studio"
         className="h-full"
         sidebar={<EffectSidebar selectedId={selectedId} onSelect={handleSelect} />}
-        sidebarSize={{ default: 220, min: 180, max: 300 }}
+        sidebarSize={{ default: 240, min: 180, max: 350 }}
         inspector={
           item.kind === "effect" ? (
             <ControlPanel
               effect={item.effect}
               params={params}
               onChange={handleChange}
-              onReset={handleReset}
             />
           ) : (
             <TreatmentPanel
               treatment={item.treatment}
               params={params}
               onChange={handleChange}
-              onReset={handleReset}
               sourceId={sourceId}
               onPickSample={handlePickSample}
               onPickFile={handlePickFile}
@@ -118,6 +162,18 @@ export function HomeView() {
             effect={item.effect}
             params={params}
             replayToken={replayToken}
+            previousLabel={previousItem.name}
+            nextLabel={nextItem.name}
+            backgroundMode={stageBackgroundMode}
+            canvasTone={stageCanvasTone}
+            zoom={stageZoom}
+            onBackgroundModeChange={setStageBackgroundMode}
+            onCanvasToneChange={setStageCanvasTone}
+            onZoomChange={setStageZoom}
+            onPrevious={() => handleNavigate(previousItem.id)}
+            onNext={() => handleNavigate(nextItem.id)}
+            canReset={canReset}
+            onReset={handleReset}
             onReplay={() => setReplayToken((t) => t + 1)}
             onExport={() => setExportOpen(true)}
           />
@@ -128,6 +184,18 @@ export function HomeView() {
             source={source}
             anim={anim}
             replayToken={replayToken}
+            previousLabel={previousItem.name}
+            nextLabel={nextItem.name}
+            backgroundMode={stageBackgroundMode}
+            canvasTone={stageCanvasTone}
+            zoom={stageZoom}
+            onBackgroundModeChange={setStageBackgroundMode}
+            onCanvasToneChange={setStageCanvasTone}
+            onZoomChange={setStageZoom}
+            onPrevious={() => handleNavigate(previousItem.id)}
+            onNext={() => handleNavigate(nextItem.id)}
+            canReset={canReset}
+            onReset={handleReset}
             onReplay={() => setReplayToken((t) => t + 1)}
             onDropFile={handlePickFile}
           />

@@ -4,6 +4,7 @@
  */
 import * as React from "react";
 import { Tooltip, Select as RadixSelect, Slider as RadixSlider, Switch as RadixSwitch } from "radix-ui";
+import { ChevronDown } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -56,13 +57,14 @@ export function Status({ variant = "info", children, className }: StatusProps) {
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "glass" | "accent" | "muted" | "filled" | "default";
   size?: "small" | "medium" | "large";
+  iconOnly?: boolean;
   children?: React.ReactNode;
 }
 
-export function Button({ variant = "default", size = "medium", className, children, ...props }: ButtonProps) {
+export function Button({ variant = "default", size = "medium", iconOnly = false, className, children, ...props }: ButtonProps) {
   const variantClasses = {
     glass:
-      "bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 border border-white/20 text-foreground backdrop-blur-sm",
+      "bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 border border-black/[0.12] dark:border-white/20 text-foreground backdrop-blur-sm",
     accent: "bg-blue-500 hover:bg-blue-600 text-white border-transparent",
     muted:
       "bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 text-foreground",
@@ -82,6 +84,7 @@ export function Button({ variant = "default", size = "medium", className, childr
         "disabled:pointer-events-none disabled:opacity-50 cursor-default",
         variantClasses[variant],
         sizeClasses[size],
+        iconOnly && (size === "small" ? "w-6 px-0" : size === "medium" ? "w-8 px-0" : "w-10 px-0"),
         className,
       )}
       {...props}
@@ -114,13 +117,14 @@ export function Separator({ className, orientation = "horizontal" }: SeparatorPr
 // ---------------------------------------------------------------------------
 // Sidebar
 // ---------------------------------------------------------------------------
-export function Sidebar({ children, className }: { children?: React.ReactNode; className?: string }) {
+export function Sidebar({ children, className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "h-full flex flex-col overflow-hidden bg-black/3 dark:bg-white/3 border-r border-black/8 dark:border-white/8",
+        "h-full flex flex-col overflow-hidden bg-black/[0.045] dark:bg-white/3 border-r border-black/[0.12] dark:border-white/8",
         className,
       )}
+      {...props}
     >
       {children}
     </div>
@@ -128,9 +132,45 @@ export function Sidebar({ children, className }: { children?: React.ReactNode; c
 }
 
 export function SidebarList({ children, className }: { children?: React.ReactNode; className?: string }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [showTopFade, setShowTopFade] = React.useState(false);
+  const [showBottomFade, setShowBottomFade] = React.useState(false);
+
+  const updateScrollFades = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const canScroll = el.scrollHeight > el.clientHeight + 1;
+    setShowTopFade(canScroll && el.scrollTop > 0);
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 2;
+    setShowBottomFade(canScroll && !atBottom);
+  }, []);
+
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollFades();
+    const observer = new ResizeObserver(updateScrollFades);
+    observer.observe(el);
+    el.addEventListener("scroll", updateScrollFades, { passive: true });
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("scroll", updateScrollFades);
+    };
+  }, [updateScrollFades, children]);
+
   return (
-    <div className={cn("flex-1 overflow-y-auto py-2", className)}>
-      {children}
+    <div className={cn("relative flex-1 min-h-0", className)}>
+      <div ref={scrollRef} className="sidebar-scroll h-full overflow-y-auto overflow-x-hidden py-2">
+        {children}
+      </div>
+      <div
+        aria-hidden
+        className={cn("sidebar-fade sidebar-fade-top", showTopFade && "is-visible")}
+      />
+      <div
+        aria-hidden
+        className={cn("sidebar-fade sidebar-fade-bottom", showBottomFade && "is-visible")}
+      />
     </div>
   );
 }
@@ -139,15 +179,31 @@ interface SidebarListGroupProps {
   title: string;
   children?: React.ReactNode;
   className?: string;
+  collapsed?: boolean;
+  onToggle?: () => void;
 }
 
-export function SidebarListGroup({ title, children, className }: SidebarListGroupProps) {
+export function SidebarListGroup({ title, children, className, collapsed = false, onToggle }: SidebarListGroupProps) {
   return (
-    <div className={cn("mb-1", className)}>
-      <div className="px-3 py-1.5 text-xs font-semibold text-black/40 dark:text-white/40 uppercase tracking-wider">
-        {title}
-      </div>
-      <div>{children}</div>
+    <div className={cn("mt-4 mb-1 first:mt-0", className)}>
+      <button
+        type="button"
+        className="group flex w-full items-center gap-1 py-1.5 pl-3 pr-3 text-left text-xs font-semibold uppercase tracking-wider text-black/55 transition-colors hover:text-foreground dark:text-white/40"
+        aria-expanded={!collapsed}
+        onClick={onToggle}
+      >
+        <span className="min-w-0 truncate">{title}</span>
+        <ChevronDown
+          size={14}
+          strokeWidth={2}
+          className={cn(
+            "shrink-0 text-black/60 transition-transform group-hover:text-foreground dark:text-white/50",
+            collapsed ? "-rotate-90" : "rotate-0",
+          )}
+          aria-hidden
+        />
+      </button>
+      {!collapsed && <div>{children}</div>}
     </div>
   );
 }
@@ -165,10 +221,10 @@ export function SidebarListItem({ title, icon, selected, onClick, className }: S
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-2 px-3 py-1.5 text-sm text-left cursor-default transition-colors rounded-md mx-1",
+        "mx-1 flex w-[calc(100%-0.5rem)] items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm cursor-default transition-colors",
         selected
-          ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 font-medium"
-          : "text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground",
+          ? "bg-blue-500/14 text-blue-700 dark:text-blue-400 font-medium"
+          : "text-black/[0.78] dark:text-white/70 hover:bg-black/[0.07] dark:hover:bg-white/5 hover:text-foreground",
         className,
       )}
     >
@@ -204,22 +260,66 @@ export function SplitView({
   inspectorSize = { default: 300 },
   children,
   className,
+  storageKey,
 }: SplitViewProps) {
+  const sidebarStorageKey = storageKey ? `${storageKey}:sidebar-width` : null;
+  const [sidebarWidth, setSidebarWidth] = React.useState(() => {
+    if (!sidebarStorageKey) return sidebarSize.default;
+    const stored = window.localStorage.getItem(sidebarStorageKey);
+    const parsed = stored ? Number(stored) : NaN;
+    return Number.isFinite(parsed) ? parsed : sidebarSize.default;
+  });
+  const sidebarMin = sidebarSize.min ?? 160;
+  const sidebarMax = sidebarSize.max ?? 350;
+  const setPersistedSidebarWidth = (width: number) => {
+    setSidebarWidth(width);
+    if (sidebarStorageKey) window.localStorage.setItem(sidebarStorageKey, String(Math.round(width)));
+  };
+
+  const startSidebarResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (event.detail > 1) return;
+    const startX = event.clientX;
+    const startWidth = sidebarWidth;
+
+    const onMove = (moveEvent: PointerEvent) => {
+      const nextWidth = Math.min(sidebarMax, Math.max(sidebarMin, startWidth + moveEvent.clientX - startX));
+      setPersistedSidebarWidth(nextWidth);
+    };
+
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+  const resetSidebarWidth = () => setPersistedSidebarWidth(sidebarSize.default);
+
   return (
     <div className={cn("flex h-full overflow-hidden", className)}>
       {sidebar && (
         <div
-          style={{ width: sidebarSize.default, minWidth: sidebarSize.min, maxWidth: sidebarSize.max }}
-          className="shrink-0 h-full overflow-hidden"
+          style={{ width: sidebarWidth, minWidth: sidebarMin, maxWidth: sidebarMax }}
+          className="relative shrink-0 h-full overflow-hidden"
         >
           {sidebar}
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize sidebar"
+            className="absolute inset-y-0 right-0 z-20 w-1 cursor-col-resize bg-transparent hover:bg-blue-500/40"
+            onDoubleClick={resetSidebarWidth}
+            onPointerDown={startSidebarResize}
+          />
         </div>
       )}
       <div className="flex-1 min-w-0 h-full overflow-hidden">{children}</div>
       {inspector && (
         <div
           style={{ width: inspectorSize.default, minWidth: inspectorSize.min, maxWidth: inspectorSize.max }}
-          className="shrink-0 h-full overflow-hidden border-l border-black/8 dark:border-white/8"
+          className="shrink-0 h-full overflow-hidden border-l border-black/[0.12] dark:border-white/8"
         >
           {inspector}
         </div>
@@ -242,7 +342,7 @@ export function Toolbar({ position = "top", children, className }: ToolbarProps)
     <div
       data-toolbar
       className={cn(
-        "flex flex-col shrink-0 border-black/8 dark:border-white/8 bg-black/2 dark:bg-white/2",
+        "flex flex-col shrink-0 border-black/[0.12] dark:border-white/8 bg-black/[0.035] dark:bg-white/2",
         position === "top" ? "border-b" : "border-t",
         className,
       )}
@@ -322,6 +422,7 @@ export class ErrorBoundaryView extends React.Component<ErrorBoundaryViewProps, E
 // Slider — wraps Radix Slider
 // ---------------------------------------------------------------------------
 interface SliderProps {
+  "aria-label"?: string;
   min?: number;
   max?: number;
   step?: number;
@@ -332,7 +433,7 @@ interface SliderProps {
   className?: string;
 }
 
-export function Slider({ min, max, step, value, onValueChange, className }: SliderProps) {
+export function Slider({ "aria-label": ariaLabel, min, max, step, value, onValueChange, className }: SliderProps) {
   return (
     <RadixSlider.Root
       min={min}
@@ -345,7 +446,10 @@ export function Slider({ min, max, step, value, onValueChange, className }: Slid
       <RadixSlider.Track className="bg-black/10 dark:bg-white/10 relative grow rounded-full h-1.5">
         <RadixSlider.Range className="absolute bg-blue-500 rounded-full h-full" />
       </RadixSlider.Track>
-      <RadixSlider.Thumb className="block w-4 h-4 bg-white dark:bg-neutral-200 shadow-md rounded-full border border-black/10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <RadixSlider.Thumb
+        aria-label={ariaLabel}
+        className="block w-4 h-4 bg-white dark:bg-neutral-200 shadow-md rounded-full border border-black/10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
     </RadixSlider.Root>
   );
 }
@@ -365,16 +469,16 @@ export function Switch({ checked, onCheckedChange, className }: SwitchProps) {
       checked={checked}
       onCheckedChange={onCheckedChange}
       className={cn(
-        "inline-flex h-5 w-9 shrink-0 cursor-default rounded-full border-2 border-transparent",
+        "inline-flex h-6 w-11 shrink-0 cursor-default items-center rounded-md border border-separator p-0.5",
         "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
-        checked ? "bg-blue-500" : "bg-black/15 dark:bg-white/15",
+        checked ? "bg-blue-500" : "bg-black/5 dark:bg-white/10",
         className,
       )}
     >
       <RadixSwitch.Thumb
         className={cn(
-          "pointer-events-none block h-4 w-4 rounded-full bg-white shadow-md ring-0 transition-transform",
-          checked ? "translate-x-4" : "translate-x-0",
+          "pointer-events-none block h-4 w-4 rounded-sm bg-white shadow-sm ring-0 transition-transform",
+          checked ? "translate-x-5" : "translate-x-0",
         )}
       />
     </RadixSwitch.Root>
@@ -550,7 +654,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   return (
     <DialogContext.Provider value={{ onClose }}>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+        <div className="absolute inset-0 bg-black/[0.38] dark:bg-black/50 backdrop-blur-sm" onClick={onClose} />
         <div className="relative z-10">{children}</div>
       </div>
     </DialogContext.Provider>
@@ -561,7 +665,7 @@ export function DialogContent({ children, className }: { children?: React.ReactN
   return (
     <div
       className={cn(
-        "bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-black/10 dark:border-white/10",
+        "bg-white dark:bg-neutral-900 rounded-xl shadow-2xl border border-black/[0.14] dark:border-white/10",
         "w-[90vw] max-w-lg max-h-[85vh] flex flex-col overflow-hidden",
         className,
       )}
@@ -573,7 +677,7 @@ export function DialogContent({ children, className }: { children?: React.ReactN
 
 export function DialogHeader({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex items-center px-5 py-4 border-b border-black/8 dark:border-white/8 shrink-0", className)}>
+    <div className={cn("flex items-center px-5 py-4 border-b border-black/[0.12] dark:border-white/8 shrink-0", className)}>
       {children}
     </div>
   );
@@ -589,7 +693,7 @@ export function DialogBody({ children, className }: { children?: React.ReactNode
 
 export function DialogFooter({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("flex items-center justify-end gap-2 px-5 py-3 border-t border-black/8 dark:border-white/8 shrink-0", className)}>
+    <div className={cn("flex items-center justify-end gap-2 px-5 py-3 border-t border-black/[0.12] dark:border-white/8 shrink-0", className)}>
       {children}
     </div>
   );

@@ -3,7 +3,29 @@
  * checks `window.glazeAPI?.glaze?.ipc?.disconnect()` doesn't throw.
  */
 
+type ThemeSource = "system" | "light" | "dark";
+
+const THEME_STORAGE_KEY = "motion-studio-theme";
+
+function storedThemeSource(): ThemeSource {
+  const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+  return stored === "light" || stored === "dark" ? stored : "system";
+}
+
+function shouldUseDarkColors(source: ThemeSource): boolean {
+  return source === "dark" || (source === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
+
+function applyThemeSource(source: ThemeSource) {
+  document.documentElement.classList.toggle("dark", shouldUseDarkColors(source));
+  if (source === "system") window.localStorage.removeItem(THEME_STORAGE_KEY);
+  else window.localStorage.setItem(THEME_STORAGE_KEY, source);
+}
+
 if (typeof window !== "undefined" && !("glazeAPI" in window)) {
+  let themeSource = storedThemeSource();
+  applyThemeSource(themeSource);
+
   (window as Record<string, unknown>).glazeAPI = {
     glaze: {
       ipc: {
@@ -27,13 +49,16 @@ if (typeof window !== "undefined" && !("glazeAPI" in window)) {
     nativeTheme: {
       getInfo: () =>
         Promise.resolve({
-          shouldUseDarkColors: window.matchMedia("(prefers-color-scheme: dark)").matches,
-          themeSource: "system" as const,
+          shouldUseDarkColors: shouldUseDarkColors(themeSource),
+          themeSource,
         }),
-      setThemeSource: () => Promise.resolve(true),
-      getShouldUseDarkColors: () =>
-        Promise.resolve(window.matchMedia("(prefers-color-scheme: dark)").matches),
-      getThemeSource: () => Promise.resolve("system" as const),
+      setThemeSource: (source: ThemeSource) => {
+        themeSource = source;
+        applyThemeSource(source);
+        return Promise.resolve(true);
+      },
+      getShouldUseDarkColors: () => Promise.resolve(shouldUseDarkColors(themeSource)),
+      getThemeSource: () => Promise.resolve(themeSource),
     },
     shell: { beep: () => {}, beepAsync: () => Promise.resolve() },
     systemPreferences: {

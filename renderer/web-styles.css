@@ -1,6 +1,8 @@
 /* Web build: explicitly import Tailwind (Glaze normally injects this) */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Source Tailwind from all renderer files */
 @source "./main/**/*.{ts,tsx}";
 @source "./settings/**/*.{ts,tsx}";
@@ -19,12 +21,16 @@
 
   /* Separator */
   --color-separator: rgba(0, 0, 0, 0.12);
+  --color-control: rgba(0, 0, 0, 0.055);
+  --color-elevated: rgba(0, 0, 0, 0.08);
 }
 
 .dark {
   --color-foreground: oklch(0.985 0 0);
   --color-background: oklch(0.145 0 0);
   --color-separator: rgba(255, 255, 255, 0.12);
+  --color-control: rgba(255, 255, 255, 0.055);
+  --color-elevated: rgba(255, 255, 255, 0.085);
 }
 
 html,
@@ -50,7 +56,7 @@ body {
 }
 
 .text-secondary {
-  color: color-mix(in oklch, var(--color-foreground) 55%, transparent);
+  color: color-mix(in oklch, var(--color-foreground) 68%, transparent);
 }
 
 .text-small {
@@ -78,10 +84,117 @@ body {
   border-color: var(--color-separator);
 }
 
-/* Drag region (no-op in browser) */
+.bg-control {
+  background-color: var(--color-control);
+}
+
+.bg-elevated {
+  background-color: var(--color-elevated);
+}
+
+/* Drag region — click-through overlay */
 .drag-region {
   -webkit-app-region: drag;
   app-region: drag;
+  pointer-events: none;
+}
+
+/* Electron frameless drag on real chrome; interactive children opt out */
+.titlebar-drag {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.titlebar-drag :is(button, a, input, textarea, select, label, [role="slider"], [role="switch"], [role="button"], .pointer-events-auto) {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.sidebar-scroll {
+  scrollbar-color: color-mix(in oklch, var(--color-foreground) 32%, transparent) transparent;
+}
+
+.sidebar-fade {
+  --sidebar-fade-size: 2rem;
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  z-index: 10;
+  height: var(--sidebar-fade-size);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.sidebar-fade.is-visible {
+  opacity: 1;
+}
+
+.sidebar-fade-top {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--color-background) 68%, transparent) 0%,
+    color-mix(in oklch, var(--color-background) 34%, transparent) 42%,
+    color-mix(in oklch, var(--color-background) 10%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+.sidebar-fade-bottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-background) 68%, transparent) 0%,
+    color-mix(in oklch, var(--color-background) 34%, transparent) 42%,
+    color-mix(in oklch, var(--color-background) 10%, transparent) 72%,
+    transparent 100%
+  );
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--color-foreground) 32%, transparent);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+.inspector-slider {
+  height: 36px;
+  overflow: hidden;
+  border: 1px solid var(--color-separator);
+  border-radius: 6px;
+  background: color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+.inspector-slider > span:first-child {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  border-radius: 0;
+  background: transparent;
+}
+
+.inspector-slider > span:first-child > span {
+  height: 100%;
+  border-radius: 0;
+  background: color-mix(in oklch, var(--color-foreground) 10%, transparent);
+}
+
+.inspector-slider > span:last-child > [role="slider"] {
+  width: 2px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-foreground) 22%, transparent);
+  box-shadow: none;
 }
 
 /* Button press feedback — scale-down on active, matching Emil's 0.97 rule */
@@ -115,11 +228,41 @@ button {
   }
 }
 
-/* Subtle dotted backdrop for the live preview stage */
 .motion-stage {
+  --stage-background: var(--color-background);
+  --stage-mark: color-mix(in oklch, var(--color-foreground) 14%, transparent);
+  background-color: var(--stage-background);
+  transition:
+    background-color 0.22s ease,
+    background-image 0.22s ease;
+}
+
+.motion-stage[data-canvas-tone="light"] {
+  --stage-background: oklch(1 0 0);
+  --stage-mark: rgba(0, 0, 0, 0.12);
+}
+
+.motion-stage[data-canvas-tone="dark"] {
+  --stage-background: oklch(0.145 0 0);
+  --stage-mark: rgba(255, 255, 255, 0.12);
+}
+
+.motion-stage[data-bg-mode="dots"],
+.motion-stage:not([data-bg-mode]) {
   background-image: radial-gradient(
-    var(--color-separator) 1px,
+    var(--stage-mark) 1px,
     transparent 1px
   );
   background-size: 16px 16px;
+}
+
+.motion-stage[data-bg-mode="grid"] {
+  background-image:
+    linear-gradient(var(--stage-mark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--stage-mark) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.motion-stage[data-bg-mode="solid"] {
+  background-image: none;
 }

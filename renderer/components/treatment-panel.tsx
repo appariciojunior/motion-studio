@@ -3,24 +3,33 @@ import {
   Button,
   Separator,
   Switch,
-  Slider,
   SegmentedControl,
   SegmentedControlItem,
 } from "@glaze/core/components";
-import { RotateCcw, ImageUp, Check } from "lucide-react";
+import { Dice5, ImageUp, Check } from "lucide-react";
 import { cn } from "@glaze/core/utils";
-import { ControlRow } from "./control-row";
+import { ColorPresetGrid, ControlRow, LabeledSlider } from "./control-row";
 import { CurveEditor } from "./curve-editor";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams, ParamValue } from "./effects/types";
 import type { AnimationSettings } from "../lib/anim";
 import { SAMPLE_IMAGES, type SampleImage } from "../lib/source-image";
 
+const EASING_PRESETS = [
+  "0.25,0.1,0.25,1",
+  "0.32,0.72,0,1",
+  "0.45,0,0.55,1",
+  "0.2,0.8,0.2,1",
+  "0.16,1,0.3,1",
+  "0.7,0,0.84,0",
+  "0.34,1.56,0.64,1",
+  "0.87,0,0.13,1",
+];
+
 interface TreatmentPanelProps {
   treatment: Treatment;
   params: EffectParams;
   onChange: (id: string, value: ParamValue) => void;
-  onReset: () => void;
   sourceId: string;
   onPickSample: (sample: SampleImage) => void;
   onPickFile: (file: File) => void;
@@ -66,21 +75,15 @@ function AnimationControls({
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-small text-secondary">Duration</span>
-              <span className="text-small text-secondary tabular-nums">{anim.duration}s</span>
-            </div>
-            <Slider
-              variant="filled"
-              size="small"
-              min={0.5}
-              max={6}
-              step={0.5}
-              value={[anim.duration]}
-              onValueChange={([v]) => onAnimChange({ duration: v })}
-            />
-          </div>
+          <LabeledSlider
+            label="Duration"
+            value={anim.duration}
+            unit="s"
+            min={0.5}
+            max={6}
+            step={0.5}
+            onValueChange={(duration) => onAnimChange({ duration })}
+          />
           <div className="flex items-center justify-between">
             <span className="text-small text-secondary">Loop</span>
             <Switch
@@ -89,7 +92,19 @@ function AnimationControls({
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-small text-secondary">Easing</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-small text-secondary">Easing</span>
+              <Button
+                variant="default"
+                size="small"
+                iconOnly
+                aria-label="Randomize easing curve"
+                title="Randomize easing curve"
+                onClick={() => onAnimChange({ easing: EASING_PRESETS[Math.floor(Math.random() * EASING_PRESETS.length)] })}
+              >
+                <Dice5 size={14} />
+              </Button>
+            </div>
             <CurveEditor value={anim.easing} onChange={(v) => onAnimChange({ easing: v })} animate />
           </div>
         </>
@@ -163,7 +178,6 @@ export function TreatmentPanel({
   treatment,
   params,
   onChange,
-  onReset,
   sourceId,
   onPickSample,
   onPickFile,
@@ -171,36 +185,38 @@ export function TreatmentPanel({
   onAnimChange,
 }: TreatmentPanelProps) {
   const supportsMotion = Boolean(treatment.animate || treatment.animated);
+  let colorPresetsShown = false;
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 pt-13 pb-3 flex items-start justify-between gap-3">
+      <div className="titlebar-drag px-4 py-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-strong">{treatment.name}</h2>
           <p className="text-small text-secondary mt-0.5">{treatment.description}</p>
         </div>
-        <Button
-          variant="transparent"
-          size="small"
-          iconOnly
-          className="shrink-0 text-secondary"
-          title="Reset to defaults"
-          aria-label="Reset to defaults"
-          onClick={onReset}
-        >
-          <RotateCcw size={15} />
-        </Button>
       </div>
       <Separator />
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-4">
+      <div className="flex-1 overflow-y-auto px-4 pt-3 pb-4 flex flex-col gap-4">
         {treatment.needsSource && (
           <>
             <SourcePicker sourceId={sourceId} onPickSample={onPickSample} onPickFile={onPickFile} />
             <Separator />
           </>
         )}
-        {treatment.controls.map((control) => (
-          <ControlRow key={control.id} control={control} params={params} onChange={onChange} />
-        ))}
+        {treatment.controls.map((control) => {
+          const showColorPresets =
+            !colorPresetsShown &&
+            control.type === "color" &&
+            (!control.visibleWhen || control.visibleWhen(params));
+          if (showColorPresets) colorPresetsShown = true;
+          return (
+            <React.Fragment key={control.id}>
+              {showColorPresets && (
+                <ColorPresetGrid controls={treatment.controls} params={params} onChange={onChange} />
+              )}
+              <ControlRow control={control} params={params} onChange={onChange} />
+            </React.Fragment>
+          );
+        })}
         {supportsMotion && (
           <>
             <Separator />

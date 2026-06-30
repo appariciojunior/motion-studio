@@ -1,9 +1,5 @@
 import * as React from "react";
 import {
-  Toolbar,
-  ToolbarRow,
-  ToolbarTitle,
-  ToolbarActions,
   Button,
   SegmentedControl,
   SegmentedControlItem,
@@ -11,10 +7,10 @@ import {
   EmptyStateTitle,
   EmptyStateDescription,
 } from "@glaze/core/components";
-import { RotateCcw, Download, Check, ImageUp, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCcw, RotateCcw, Download, Check, ImageUp, Loader2 } from "lucide-react";
 import type { Treatment } from "./treatments/types";
 import type { EffectParams } from "./effects/types";
-import { AppearanceToggle } from "./appearance-toggle";
+import { StageCanvasControls, type StageBackgroundMode, type StageCanvasTone } from "./stage-canvas-controls";
 import { downloadCanvasPng } from "../lib/image-export";
 import {
   applyAnimation,
@@ -36,6 +32,18 @@ interface TreatmentStageProps {
   source: HTMLImageElement | null;
   anim: AnimationSettings;
   replayToken: number;
+  previousLabel: string;
+  nextLabel: string;
+  backgroundMode: StageBackgroundMode;
+  canvasTone: StageCanvasTone;
+  zoom: number;
+  onBackgroundModeChange: (mode: StageBackgroundMode) => void;
+  onCanvasToneChange: (tone: StageCanvasTone) => void;
+  onZoomChange: (zoom: number) => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  canReset: boolean;
+  onReset: () => void;
   onReplay: () => void;
   onDropFile: (file: File) => void;
 }
@@ -63,6 +71,18 @@ export function TreatmentStage({
   source,
   anim,
   replayToken,
+  previousLabel,
+  nextLabel,
+  backgroundMode,
+  canvasTone,
+  zoom,
+  onBackgroundModeChange,
+  onCanvasToneChange,
+  onZoomChange,
+  onPrevious,
+  onNext,
+  canReset,
+  onReset,
   onReplay,
   onDropFile,
 }: TreatmentStageProps) {
@@ -178,17 +198,11 @@ export function TreatmentStage({
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <Toolbar position="top">
-        <ToolbarRow>
-          <ToolbarTitle>{treatment.name}</ToolbarTitle>
-        </ToolbarRow>
-        <ToolbarActions>
-          <AppearanceToggle />
-        </ToolbarActions>
-      </Toolbar>
+    <div className="flex h-full min-h-0 flex-col">
       <div
-        className="motion-stage relative flex-1 flex items-center justify-center overflow-auto p-10"
+        className="titlebar-drag motion-stage relative min-h-0 flex-1 flex items-center justify-center overflow-x-hidden overflow-y-auto p-10"
+        data-bg-mode={backgroundMode}
+        data-canvas-tone={canvasTone}
         onDragOver={(e) => {
           if (treatment.needsSource) {
             e.preventDefault();
@@ -198,17 +212,47 @@ export function TreatmentStage({
         onDragLeave={() => setDragOver(false)}
         onDrop={treatment.needsSource ? handleDrop : undefined}
       >
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-20 flex items-center justify-center">
+          <div className="pointer-events-auto flex max-w-[min(70%,28rem)] items-center gap-1 rounded-full border border-separator bg-background/85 p-1 shadow-sm backdrop-blur">
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              className="rounded-full"
+              aria-label={`Previous effect: ${previousLabel}`}
+              title={previousLabel}
+              onClick={onPrevious}
+            >
+              <ChevronLeft size={15} />
+            </Button>
+            <span className="min-w-0 truncate px-2 text-center text-sm font-medium">{treatment.name}</span>
+            <Button
+              variant="default"
+              size="small"
+              iconOnly
+              className="rounded-full"
+              aria-label={`Next effect: ${nextLabel}`}
+              title={nextLabel}
+              onClick={onNext}
+            >
+              <ChevronRight size={15} />
+            </Button>
+          </div>
+        </div>
         {missingSource ? (
-          <EmptyState>
-            <EmptyStateTitle>No image yet</EmptyStateTitle>
-            <EmptyStateDescription>
-              Pick a sample or drop an image to start treating it.
-            </EmptyStateDescription>
-          </EmptyState>
+          <div className="transition-transform" style={{ transform: `scale(${zoom})` }}>
+            <EmptyState>
+              <EmptyStateTitle>No image yet</EmptyStateTitle>
+              <EmptyStateDescription>
+                Pick a sample or drop an image to start treating it.
+              </EmptyStateDescription>
+            </EmptyState>
+          </div>
         ) : (
           <canvas
             ref={canvasRef}
-            className="max-w-full max-h-full object-contain rounded-card shadow-lg"
+            className="max-w-full max-h-full object-contain rounded-card shadow-lg transition-transform"
+            style={{ transform: `scale(${zoom})` }}
           />
         )}
 
@@ -223,6 +267,12 @@ export function TreatmentStage({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-5 flex items-center justify-center gap-2">
           <div className="pointer-events-auto flex items-center gap-2">
+            {canReset && (
+              <Button variant="glass" size="small" onClick={onReset} disabled={!!busy}>
+                <RefreshCcw size={15} />
+                Reset
+              </Button>
+            )}
             {(treatment.animated || anim.enabled) && (
               <Button variant="glass" size="small" onClick={onReplay} disabled={!!busy}>
                 <RotateCcw size={15} />
@@ -254,6 +304,16 @@ export function TreatmentStage({
               {exportLabel()}
             </Button>
           </div>
+        </div>
+        <div className="pointer-events-none absolute bottom-5 right-3 z-20">
+          <StageCanvasControls
+            backgroundMode={backgroundMode}
+            canvasTone={canvasTone}
+            zoom={zoom}
+            onBackgroundModeChange={onBackgroundModeChange}
+            onCanvasToneChange={onCanvasToneChange}
+            onZoomChange={onZoomChange}
+          />
         </div>
       </div>
     </div>

@@ -32,7 +32,10 @@ root.render(
   </React.StrictMode>,
 );
 
-// Hot Module Replacement (HMR) support
+// HMR re-runs this module; unmount so we don't stack duplicate app roots in #root.
 if (import.meta.hot) {
   import.meta.hot.accept();
+  import.meta.hot.dispose(() => {
+    root.unmount();
+  });
 }

@@ -1,44 +1,42 @@
 import * as React from "react";
-import { Button } from "@glaze/core/components";
-import { Sun, Moon } from "lucide-react";
+import { Laptop, Moon, Sun } from "lucide-react";
 
-// Quick light/dark switch for the main window. The full Auto/Light/Dark control
-// still lives in Settings; this just flips the effective appearance in place.
+type ThemeSource = "system" | "dark" | "light";
+
+const THEME_ORDER: ThemeSource[] = ["system", "dark", "light"];
+
 export function AppearanceToggle() {
-  const [isDark, setIsDark] = React.useState<boolean | null>(null);
+  const [themeSource, setThemeSource] = React.useState<ThemeSource>("system");
 
   React.useEffect(() => {
     let active = true;
-    window.glazeAPI.nativeTheme.getShouldUseDarkColors().then((dark) => {
-      if (active) setIsDark(dark);
+    window.glazeAPI.nativeTheme.getThemeSource().then((source) => {
+      if (active) setThemeSource(source);
     });
 
-    // Keep the icon in sync when the OS appearance changes while on "system".
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
-    media.addEventListener("change", onChange);
     return () => {
       active = false;
-      media.removeEventListener("change", onChange);
     };
   }, []);
 
   const toggle = async () => {
-    const next = !isDark;
-    setIsDark(next);
-    await window.glazeAPI.nativeTheme.setThemeSource(next ? "dark" : "light");
+    const next = THEME_ORDER[(THEME_ORDER.indexOf(themeSource) + 1) % THEME_ORDER.length];
+    setThemeSource(next);
+    await window.glazeAPI.nativeTheme.setThemeSource(next);
   };
 
+  const label =
+    themeSource === "system" ? "Use dark mode" : themeSource === "dark" ? "Use light mode" : "Use system theme";
+
   return (
-    <Button
-      iconOnly
-      variant="glass"
-      size="large"
+    <button
+      type="button"
+      className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-black/55 transition-colors hover:bg-black/[0.07] hover:text-foreground dark:text-white/50 dark:hover:bg-white/[0.07] dark:hover:text-white"
       onClick={toggle}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={label}
+      title={label}
     >
-      {isDark ? <Sun /> : <Moon />}
-    </Button>
+      {themeSource === "system" ? <Laptop size={16} /> : themeSource === "dark" ? <Moon size={16} /> : <Sun size={16} />}
+    </button>
   );
 }
